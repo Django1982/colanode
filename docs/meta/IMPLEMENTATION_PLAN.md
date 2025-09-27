@@ -24,3 +24,6 @@
 - Surface sync health dashboards by aggregating metrics from Redis/BullMQ queues and presenting them in the admin console.
 - Iterate on AI-powered assistants once dashboards expose data quality signals, tying into existing LangChain pipelines (`apps/server/src/lib/ai`).
 - Document operating procedures, add end-to-end tests, and monitor performance before general release.
+
+## Maintenance Backlog
+- Replace deprecated npm dependencies highlighted in `docs/NPM_WARNINGS.md` (e.g. `rimraf@3`, `glob@7`, `eslint@8`, `inflight@1`, `sourcemap-codec@1`) with supported alternatives or upgraded versions to keep future Docker builds warning-free.
