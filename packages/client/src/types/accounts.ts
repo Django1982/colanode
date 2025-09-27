@@ -1,3 +1,5 @@
+import { ServerRole } from '@colanode/core';
+
 export type Account = {
   id: string;
   name: string;
@@ -6,6 +8,7 @@ export type Account = {
   token: string;
   deviceId: string;
   server: string;
+  serverRole: ServerRole;
   createdAt: string;
   updatedAt: string | null;
   syncedAt: string | null;

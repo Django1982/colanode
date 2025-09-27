@@ -5,6 +5,7 @@ import { AppService } from '@colanode/client/services';
 import { AccountLogoutMutationHandler } from './accounts/account-logout';
 import { AccountMetadataDeleteMutationHandler } from './accounts/account-metadata-delete';
 import { AccountMetadataUpdateMutationHandler } from './accounts/account-metadata-update';
+import { AccountPasswordRotateMutationHandler } from './accounts/account-password-rotate';
 import { AccountUpdateMutationHandler } from './accounts/account-update';
 import { EmailLoginMutationHandler } from './accounts/email-login';
 import { EmailPasswordResetCompleteMutationHandler } from './accounts/email-password-reset-complete';
@@ -12,6 +13,11 @@ import { EmailPasswordResetInitMutationHandler } from './accounts/email-password
 import { EmailRegisterMutationHandler } from './accounts/email-register';
 import { EmailVerifyMutationHandler } from './accounts/email-verify';
 import { GoogleLoginMutationHandler } from './accounts/google-login';
+import { AdminAccountPasswordResetMutationHandler } from './admin/account-password-reset';
+import { AdminAccountServerRoleUpdateMutationHandler } from './admin/account-server-role-update';
+import { AdminAccountStatusUpdateMutationHandler } from './admin/account-status-update';
+import { AdminWorkspacePurgeMutationHandler } from './admin/workspace-purge';
+import { AdminWorkspaceRestoreMutationHandler } from './admin/workspace-restore';
 import { AppMetadataDeleteMutationHandler } from './apps/app-metadata-delete';
 import { AppMetadataUpdateMutationHandler } from './apps/app-metadata-update';
 import { AvatarUploadMutationHandler } from './avatars/avatar-upload';
@@ -136,6 +142,14 @@ export const buildMutationHandlerMap = (
     'space.update': new SpaceUpdateMutationHandler(app),
     'space.child.reorder': new SpaceChildReorderMutationHandler(app),
     'account.update': new AccountUpdateMutationHandler(app),
+    'account.password.rotate': new AccountPasswordRotateMutationHandler(app),
+    'admin.account.server-role.update':
+      new AdminAccountServerRoleUpdateMutationHandler(app),
+    'admin.account.status.update': new AdminAccountStatusUpdateMutationHandler(app),
+    'admin.account.password-reset':
+      new AdminAccountPasswordResetMutationHandler(app),
+    'admin.workspace.restore': new AdminWorkspaceRestoreMutationHandler(app),
+    'admin.workspace.purge': new AdminWorkspacePurgeMutationHandler(app),
     'view.update': new ViewUpdateMutationHandler(app),
     'view.delete': new ViewDeleteMutationHandler(app),
     'view.name.update': new ViewNameUpdateMutationHandler(app),

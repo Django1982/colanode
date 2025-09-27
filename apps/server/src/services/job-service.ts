@@ -64,6 +64,14 @@ class JobService {
     await this.jobQueue.add(job.type, job, options);
   }
 
+  public async removeJob(jobId: string) {
+    if (!this.jobQueue) {
+      throw new Error('Job queue not initialized.');
+    }
+
+    await this.jobQueue.remove(jobId);
+  }
+
   private handleJobJob = async (job: Job) => {
     const input = job.data as JobInput;
     const handler = jobHandlerMap[input.type] as JobHandler<typeof input>;
@@ -90,6 +98,7 @@ class JobService {
     await this.initNodeUpdatesMergeRecurringJob();
     await this.initDocumentUpdatesMergeRecurringJob();
     await this.initUploadsCleanRecurringJob();
+    await this.initAuditCleanupRecurringJob();
   }
 
   private async initNodeEmbedScanRecurringJob(): Promise<void> {
@@ -196,6 +205,26 @@ class JobService {
         {
           name: id,
           data: { type: 'uploads.clean' } as JobInput,
+        }
+      );
+    } else {
+      this.jobQueue.removeJobScheduler(id);
+    }
+  }
+
+  private async initAuditCleanupRecurringJob(): Promise<void> {
+    if (!this.jobQueue) {
+      return;
+    }
+
+    const id = 'audit.log.cleanup';
+    if (config.logging.audit.enabled) {
+      this.jobQueue.upsertJobScheduler(
+        id,
+        { pattern: '0 3 * * *' },
+        {
+          name: id,
+          data: { type: 'audit.log.cleanup' } as JobInput,
         }
       );
     } else {

@@ -7,6 +7,7 @@ import {
   apiErrorOutputSchema,
   workspaceOutputSchema,
   workspaceUpdateInputSchema,
+  WorkspaceStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { eventBus } from '@colanode/server/lib/event-bus';
@@ -54,6 +55,7 @@ export const workspaceUpdateRoute: FastifyPluginCallbackZod = (
           updated_by: request.user.id,
         })
         .where('id', '=', workspaceId)
+        .where('status', '=', WorkspaceStatus.Active)
         .returningAll()
         .executeTakeFirst();
 
@@ -75,6 +77,8 @@ export const workspaceUpdateRoute: FastifyPluginCallbackZod = (
         description: updatedWorkspace.description,
         avatar: updatedWorkspace.avatar,
         apiEnabled: updatedWorkspace.api_enabled ?? false,
+        status: updatedWorkspace.status as WorkspaceStatus,
+        deletedAt: updatedWorkspace.deleted_at?.toISOString() ?? null,
         user: {
           id: request.user.id,
           accountId: request.user.account_id,

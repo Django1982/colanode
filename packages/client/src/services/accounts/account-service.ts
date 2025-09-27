@@ -20,8 +20,10 @@ import {
   AccountSyncOutput,
   ApiErrorCode,
   ApiErrorOutput,
+  WorkspaceStatus,
   createDebugger,
   Message,
+  ServerRole,
 } from '@colanode/core';
 
 const debug = createDebugger('desktop:service:account');
@@ -89,6 +91,10 @@ export class AccountService {
     return this.account.deviceId;
   }
 
+  public get serverRole(): ServerRole {
+    return this.account.serverRole;
+  }
+
   public async init(): Promise<void> {
     await this.migrate();
     await this.app.fs.makeDirectory(this.app.path.account(this.account.id));
@@ -116,9 +122,14 @@ export class AccountService {
   }
 
   public updateAccount(account: Account): void {
+    this.account.name = account.name;
     this.account.email = account.email;
+    this.account.avatar = account.avatar;
     this.account.token = account.token;
     this.account.deviceId = account.deviceId;
+    this.account.serverRole = account.serverRole;
+    this.account.updatedAt = account.updatedAt;
+    this.account.syncedAt = account.syncedAt;
   }
 
   public getWorkspace(id: string): WorkspaceService | null {
@@ -254,7 +265,8 @@ export class AccountService {
 
       const hasChanges =
         response.account.name !== this.account.name ||
-        response.account.avatar !== this.account.avatar;
+        response.account.avatar !== this.account.avatar ||
+        response.account.serverRole !== this.account.serverRole;
 
       const updatedAccount = await this.app.database
         .updateTable('accounts')
@@ -262,6 +274,7 @@ export class AccountService {
         .set({
           name: response.account.name,
           avatar: response.account.avatar,
+          server_role: response.account.serverRole,
           updated_at: hasChanges
             ? new Date().toISOString()
             : this.account.updatedAt,
@@ -301,6 +314,9 @@ export class AccountService {
               role: workspace.user.role,
               storage_limit: workspace.user.storageLimit,
               max_file_size: workspace.user.maxFileSize,
+              status: workspace.status ?? WorkspaceStatus.Active,
+              deleted_at: workspace.deletedAt ?? null,
+              api_enabled: workspace.apiEnabled ? 1 : 0,
               created_at: new Date().toISOString(),
             })
             .executeTakeFirst();
@@ -328,6 +344,9 @@ export class AccountService {
               role: workspace.user.role,
               storage_limit: workspace.user.storageLimit,
               max_file_size: workspace.user.maxFileSize,
+              status: workspace.status ?? WorkspaceStatus.Active,
+              deleted_at: workspace.deletedAt ?? null,
+              api_enabled: workspace.apiEnabled ? 1 : 0,
             })
             .where('id', '=', workspace.id)
             .executeTakeFirst();

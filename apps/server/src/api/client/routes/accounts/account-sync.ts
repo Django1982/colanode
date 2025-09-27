@@ -8,6 +8,8 @@ import {
   UserStatus,
   accountSyncOutputSchema,
   apiErrorOutputSchema,
+  ServerRole,
+  WorkspaceStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 
@@ -84,11 +86,16 @@ export const accountSyncRoute: FastifyPluginCallbackZod = (
             continue;
           }
 
+          if (workspace.status !== WorkspaceStatus.Active) {
+            continue;
+          }
+
           workspaceOutputs.push({
             id: workspace.id,
             name: workspace.name,
             avatar: workspace.avatar,
             description: workspace.description,
+            apiEnabled: workspace.api_enabled ?? false,
             user: {
               id: user.id,
               accountId: user.account_id,
@@ -96,6 +103,8 @@ export const accountSyncRoute: FastifyPluginCallbackZod = (
               storageLimit: user.storage_limit,
               maxFileSize: user.max_file_size,
             },
+            status: workspace.status as WorkspaceStatus,
+            deletedAt: workspace.deleted_at?.toISOString() ?? null,
           });
         }
       }
@@ -106,6 +115,7 @@ export const accountSyncRoute: FastifyPluginCallbackZod = (
           name: account.name,
           email: account.email,
           avatar: account.avatar,
+          serverRole: account.server_role as ServerRole,
         },
         workspaces: workspaceOutputs,
       };

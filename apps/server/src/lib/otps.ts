@@ -3,6 +3,12 @@ import crypto from 'crypto';
 import { redis } from '@colanode/server/data/redis';
 import { Otp } from '@colanode/server/types/otps';
 
+export type {
+  Otp,
+  AccountPasswordResetOtpAttributes,
+  AccountVerifyOtpAttributes,
+} from '@colanode/server/types/otps';
+
 const OTP_DIGITS = '0123456789';
 const OTP_LENGTH = 6;
 

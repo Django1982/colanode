@@ -100,6 +100,9 @@ export class WorkspaceService {
     this.workspace.description = workspace.description;
     this.workspace.avatar = workspace.avatar;
     this.workspace.role = workspace.role;
+    this.workspace.status = workspace.status;
+    this.workspace.deletedAt = workspace.deletedAt;
+    this.workspace.apiEnabled = workspace.apiEnabled;
   }
 
   public async init() {

@@ -1,4 +1,4 @@
-import { WorkspaceRole } from '@colanode/core';
+import { WorkspaceRole, WorkspaceStatus } from '@colanode/core';
 
 export type Workspace = {
   id: string;
@@ -10,6 +10,9 @@ export type Workspace = {
   userId: string;
   maxFileSize: string;
   storageLimit: string;
+  status?: WorkspaceStatus;
+  deletedAt?: string | null;
+  apiEnabled?: boolean;
 };
 
 export type ContainerTab = {
@@ -23,7 +26,7 @@ export type ContainerMetadata = {
   width?: number;
 };
 
-export type SidebarMenuType = 'chats' | 'spaces' | 'settings';
+export type SidebarMenuType = 'chats' | 'spaces' | 'settings' | 'admin';
 
 export type SidebarMetadata = {
   menu: SidebarMenuType;

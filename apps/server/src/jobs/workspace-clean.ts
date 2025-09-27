@@ -1,3 +1,4 @@
+import { WorkspaceStatus } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { JobHandler } from '@colanode/server/jobs';
 import { deleteFile } from '@colanode/server/lib/files';
@@ -25,6 +26,27 @@ export const workspaceCleanHandler: JobHandler<WorkspaceCleanInput> = async (
   logger.debug(`Cleaning workspace data for ${input.workspaceId}`);
 
   try {
+    const workspace = await database
+      .selectFrom('workspaces')
+      .select(['status', 'deleted_at'])
+      .where('id', '=', input.workspaceId)
+      .executeTakeFirst();
+
+    if (!workspace) {
+      logger.debug(`Workspace ${input.workspaceId} missing, skipping cleanup`);
+      return;
+    }
+
+    if (
+      workspace.status === WorkspaceStatus.Active ||
+      workspace.deleted_at === null
+    ) {
+      logger.debug(
+        `Workspace ${input.workspaceId} restored before cleanup, skipping`
+      );
+      return;
+    }
+
     await deleteWorkspaceUsers(input.workspaceId);
     await deleteWorkspaceNodes(input.workspaceId);
     await deleteWorkspaceUploads(input.workspaceId);

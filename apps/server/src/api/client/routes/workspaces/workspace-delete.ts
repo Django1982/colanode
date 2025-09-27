@@ -5,10 +5,13 @@ import {
   ApiErrorCode,
   apiErrorOutputSchema,
   workspaceOutputSchema,
+  WorkspaceStatus,
+  UserStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { eventBus } from '@colanode/server/lib/event-bus';
 import { jobService } from '@colanode/server/services/job-service';
+import { config } from '@colanode/server/lib/config';
 
 export const workspaceDeleteRoute: FastifyPluginCallbackZod = (
   instance,
@@ -41,10 +44,37 @@ export const workspaceDeleteRoute: FastifyPluginCallbackZod = (
       }
 
       const workspace = await database
-        .deleteFrom('workspaces')
-        .returningAll()
+        .updateTable('workspaces')
+        .set({
+          status: WorkspaceStatus.Inactive,
+          deleted_at: new Date(),
+          updated_at: new Date(),
+        })
         .where('id', '=', workspaceId)
+        .where('status', '=', WorkspaceStatus.Active)
+        .returningAll()
         .executeTakeFirst();
+
+      if (!workspace) {
+        return reply.code(404).send({
+          code: ApiErrorCode.WorkspaceNotFound,
+          message: 'Workspace not found.',
+        });
+      }
+
+      await database
+        .updateTable('users')
+        .set({
+          status: UserStatus.Removed,
+          updated_at: new Date(),
+        })
+        .where('workspace_id', '=', workspaceId)
+        .execute();
+
+      const retentionMs = Math.max(
+        config.workspace.retentionDays * 24 * 60 * 60 * 1000,
+        0
+      );
 
       await jobService.addJob(
         {
@@ -58,16 +88,9 @@ export const workspaceDeleteRoute: FastifyPluginCallbackZod = (
             type: 'exponential',
             delay: 1000,
           },
-          delay: 1000,
+          delay: retentionMs,
         }
       );
-
-      if (!workspace) {
-        return reply.code(404).send({
-          code: ApiErrorCode.WorkspaceNotFound,
-          message: 'Workspace not found.',
-        });
-      }
 
       eventBus.publish({
         type: 'workspace.deleted',
@@ -79,6 +102,9 @@ export const workspaceDeleteRoute: FastifyPluginCallbackZod = (
         name: workspace.name,
         description: workspace.description,
         avatar: workspace.avatar,
+        apiEnabled: workspace.api_enabled ?? false,
+        status: workspace.status as WorkspaceStatus,
+        deletedAt: workspace.deleted_at?.toISOString() ?? null,
         user: {
           id: request.user.id,
           accountId: request.user.account_id,

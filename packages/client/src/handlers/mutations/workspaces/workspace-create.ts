@@ -8,7 +8,11 @@ import {
   WorkspaceCreateMutationOutput,
 } from '@colanode/client/mutations/workspaces/workspace-create';
 import { AppService } from '@colanode/client/services/app-service';
-import { WorkspaceCreateInput, WorkspaceOutput } from '@colanode/core';
+import {
+  WorkspaceCreateInput,
+  WorkspaceOutput,
+  WorkspaceStatus,
+} from '@colanode/core';
 
 export class WorkspaceCreateMutationHandler
   implements MutationHandler<WorkspaceCreateMutationInput>
@@ -57,6 +61,9 @@ export class WorkspaceCreateMutationHandler
           storage_limit: response.user.storageLimit,
           max_file_size: response.user.maxFileSize,
           user_id: response.user.id,
+          status: response.status ?? WorkspaceStatus.Active,
+          deleted_at: response.deletedAt ?? null,
+          api_enabled: response.apiEnabled ? 1 : 0,
           created_at: new Date().toISOString(),
         })
         .onConflict((cb) => cb.doNothing())

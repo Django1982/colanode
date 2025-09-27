@@ -1,21 +1,16 @@
-version: '3.8'
+name: "Colanode local Testing"
 
 x-base: &base
-  deploy:
-    resources:
-      limits:
-        cpus: "3.5"
-        memory: 2000m
+  mem_limit: 2000m # Override per container if necessary
   pids_limit: 200
+  cpus: "3.5" # Set below the total number of cores, for example 3.5 for 4 cores
   logging:
     options:
       max-size: "10m"
       max-file: "3"
   security_opt:
     - no-new-privileges=true
-    
-name: "Colanode local test"
-
+        
 services:
   server:
     <<: *base
@@ -23,22 +18,25 @@ services:
     container_name: colanode_server_local
     restart: unless-stopped
     env_file:
-      - ./defaults.env
+      - ./.env
     environment:
       NODE_ENV: ${NODE_ENV:-production}
+    volumes:
+      - ./var/logs:/var/log/colanode
     ports:
-      - '3000:3000'
+      - '7010:3000'
     depends_on:
       - postgres
       - valkey
       - minio
     networks:
       - colanode_network
+      - reverse-proxy
 
   postgres:
     <<: *base
     image: pgvector/pgvector:pg17
-    container_name: colanode_postgres
+    container_name: colanode_postgres_local
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-colanode_user}
@@ -47,27 +45,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '7432:5432'
     networks:
       - colanode_network
 
   valkey:
     <<: *base
     image: valkey/valkey:8.1
-    container_name: colanode_valkey
+    container_name: colanode_valkey_local
     restart: unless-stopped
     command: ['valkey-server', '--requirepass', '${REDIS_PASSWORD:-your_valkey_password}']
     volumes:
       - valkey_data:/data
     ports:
-      - '6379:6379'
+      - '7379:6379'
     networks:
       - colanode_network
 
   minio:
     <<: *base
     image: minio/minio:RELEASE.2025-04-08T15-41-24Z
-    container_name: colanode_minio
+    container_name: colanode_minio_local
     restart: unless-stopped
     environment:
       MINIO_ROOT_USER: ${STORAGE_S3_ACCESS_KEY:-minioadmin}
@@ -79,28 +77,31 @@ services:
     volumes:
       - minio_data:/data
     ports:
-      - '9000:9000'
-      - '9001:9001'
-    command: >-
-      sh -c "mkdir -p /data/colanode && minio server /data --address ':9000' --console-address ':9001'"
+      - '7000:9000'
+      - '7001:9001'
+    entrypoint:
+      - /bin/sh
+      - -c
+      - mkdir -p /data/colanode && exec minio server /data --address ':9000' --console-address ':9001'
     networks:
       - colanode_network
 
   web:
     <<: *base
     image: django01/colanode-web:local
-    container_name: colanode_web
+    container_name: colanode_web_local
     restart: unless-stopped
     env_file:
-      - ./defaults.env
+      - ./.env
     environment:
       VITE_SERVER_URL: http://server:3000
     depends_on:
       - server
     ports:
-      - '4000:80'
+      - '7080:80'
     networks:
       - colanode_network
+      - reverse-proxy
 
 volumes:
   postgres_data:
@@ -110,3 +111,6 @@ volumes:
 networks:
   colanode_network:
     driver: bridge
+    external: false
+  reverse-proxy:
+    external: true

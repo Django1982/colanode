@@ -5,6 +5,7 @@ import sharp from 'sharp';
 
 import {
   AccountStatus,
+  ServerRole,
   generateId,
   IdType,
   ApiErrorCode,
@@ -251,6 +252,17 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
         status = AccountStatus.Active;
       }
 
+      const hasAdministrator = await database
+        .selectFrom('accounts')
+        .select('id')
+        .where('server_role', '=', 'administrator')
+        .limit(1)
+        .executeTakeFirst();
+
+      const defaultServerRole: ServerRole = hasAdministrator
+        ? 'member'
+        : 'administrator';
+
       const newAccount = await database
         .insertInto('accounts')
         .values({
@@ -259,6 +271,7 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
           email: googleUser.email,
           avatar,
           status,
+          server_role: defaultServerRole,
           created_at: new Date(),
           password: null,
           attributes: JSON.stringify({ googleId: googleUser.id }),

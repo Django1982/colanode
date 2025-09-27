@@ -10,6 +10,8 @@ import {
   generateId,
   LoginVerifyOutput,
   trimString,
+  ServerRole,
+  WorkspaceStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { SelectAccount } from '@colanode/server/data/schema';
@@ -53,6 +55,30 @@ export const verifyPassword = async (
   return await argon2.verify(hash, password);
 };
 
+export const validatePasswordStrength = (password: string): string | null => {
+  if (password.length < 12) {
+    return 'Password must be at least 12 characters long.';
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return 'Password must include at least one lowercase letter.';
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return 'Password must include at least one uppercase letter.';
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return 'Password must include at least one digit.';
+  }
+
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    return 'Password must include at least one special character.';
+  }
+
+  return null;
+};
+
 export const buildLoginSuccessOutput = async (
   account: SelectAccount,
   client: ClientContext
@@ -81,11 +107,16 @@ export const buildLoginSuccessOutput = async (
         continue;
       }
 
+      if (workspace.status !== WorkspaceStatus.Active) {
+        continue;
+      }
+
       workspaceOutputs.push({
         id: workspace.id,
         name: workspace.name,
         avatar: workspace.avatar,
         description: workspace.description,
+        apiEnabled: workspace.api_enabled ?? false,
         user: {
           id: user.id,
           accountId: user.account_id,
@@ -93,6 +124,8 @@ export const buildLoginSuccessOutput = async (
           storageLimit: user.storage_limit,
           maxFileSize: user.max_file_size,
         },
+        status: workspace.status as WorkspaceStatus,
+        deletedAt: workspace.deleted_at?.toISOString() ?? null,
       });
     }
   }
@@ -133,6 +166,7 @@ export const buildLoginSuccessOutput = async (
       name: account.name,
       email: account.email,
       avatar: account.avatar,
+      serverRole: account.server_role as ServerRole,
     },
     workspaces: workspaceOutputs,
     deviceId: device.id,

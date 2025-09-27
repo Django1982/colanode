@@ -2,6 +2,10 @@ import { z } from 'zod/v4';
 
 import { workspaceOutputSchema } from '@colanode/core/types/workspaces';
 
+export const serverRoleSchema = z.enum(['administrator', 'member']);
+
+export type ServerRole = z.infer<typeof serverRoleSchema>;
+
 export enum AccountStatus {
   Pending = 0,
   Active = 1,
@@ -13,6 +17,7 @@ export const accountOutputSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   avatar: z.string().optional().nullable(),
+  serverRole: serverRoleSchema,
 });
 
 export type AccountOutput = z.infer<typeof accountOutputSchema>;
@@ -125,6 +130,19 @@ export const emailPasswordResetCompleteOutputSchema = z.object({
 export type EmailPasswordResetCompleteOutput = z.infer<
   typeof emailPasswordResetCompleteOutputSchema
 >;
+
+export const passwordRotateInputSchema = z.object({
+  currentPassword: z.string(),
+  newPassword: z.string(),
+});
+
+export type PasswordRotateInput = z.infer<typeof passwordRotateInputSchema>;
+
+export const passwordRotateOutputSchema = z.object({
+  success: z.boolean(),
+});
+
+export type PasswordRotateOutput = z.infer<typeof passwordRotateOutputSchema>;
 
 export const googleLoginInputSchema = z.object({
   code: z.string(),

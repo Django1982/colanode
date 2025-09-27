@@ -156,6 +156,8 @@ export const createWorkspace = async (
     description: workspace.description,
     avatar: workspace.avatar,
     apiEnabled: workspace.api_enabled,
+    status: workspace.status,
+    deletedAt: workspace.deleted_at?.toISOString() ?? null,
     user: {
       id: user.id,
       accountId: user.account_id,

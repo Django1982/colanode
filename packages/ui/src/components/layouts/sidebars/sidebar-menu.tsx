@@ -1,9 +1,10 @@
-import { LayoutGrid, MessageCircle, Settings } from 'lucide-react';
+import { LayoutGrid, MessageCircle, Settings, ShieldCheck } from 'lucide-react';
 
 import { SidebarMenuType } from '@colanode/client/types';
 import { SidebarMenuFooter } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-footer';
 import { SidebarMenuHeader } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-header';
 import { SidebarMenuIcon } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-icon';
+import { useAccount } from '@colanode/ui/contexts/account';
 import { useApp } from '@colanode/ui/contexts/app';
 import { useRadar } from '@colanode/ui/contexts/radar';
 import { useWorkspace } from '@colanode/ui/contexts/workspace';
@@ -16,6 +17,7 @@ interface SidebarMenuProps {
 
 export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
   const app = useApp();
+  const account = useAccount();
   const workspace = useWorkspace();
   const radar = useRadar();
 
@@ -52,7 +54,7 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
         <div className="w-full h-4" />
       )}
       <SidebarMenuHeader />
-      <div className="flex flex-col gap-1 mt-2 w-full p-2 items-center flex-grow">
+        <div className="flex flex-col gap-1 mt-2 w-full p-2 items-center flex-grow">
         <SidebarMenuIcon
           icon={MessageCircle}
           onClick={() => {
@@ -77,6 +79,15 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
             maxCount: 99,
           }}
         />
+        {account.serverRole === 'administrator' && (
+          <SidebarMenuIcon
+            icon={ShieldCheck}
+            onClick={() => {
+              onChange('admin');
+            }}
+            isActive={value === 'admin'}
+          />
+        )}
         <div className="mt-auto" />
         <SidebarMenuIcon
           icon={Settings}

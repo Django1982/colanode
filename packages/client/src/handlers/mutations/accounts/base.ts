@@ -3,7 +3,7 @@ import { mapAccount, mapWorkspace } from '@colanode/client/lib/mappers';
 import { MutationError, MutationErrorCode } from '@colanode/client/mutations';
 import { AppService } from '@colanode/client/services/app-service';
 import { ServerService } from '@colanode/client/services/server-service';
-import { LoginSuccessOutput } from '@colanode/core';
+import { LoginSuccessOutput, WorkspaceStatus } from '@colanode/core';
 
 export abstract class AccountMutationHandlerBase {
   protected readonly app: AppService;
@@ -27,6 +27,7 @@ export abstract class AccountMutationHandlerBase {
         token: login.token,
         device_id: login.deviceId,
         avatar: login.account.avatar,
+        server_role: login.account.serverRole,
         created_at: new Date().toISOString(),
       })
       .executeTakeFirst();
@@ -64,6 +65,9 @@ export abstract class AccountMutationHandlerBase {
           max_file_size: workspace.user.maxFileSize,
           avatar: workspace.avatar,
           description: workspace.description,
+          status: workspace.status ?? WorkspaceStatus.Active,
+          deleted_at: workspace.deletedAt ?? null,
+          api_enabled: workspace.apiEnabled ? 1 : 0,
           created_at: new Date().toISOString(),
         })
         .executeTakeFirst();

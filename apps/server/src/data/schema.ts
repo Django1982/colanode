@@ -15,6 +15,7 @@ import {
   DocumentType,
   DocumentContent,
   UpdateMergeMetadata,
+  ServerRole,
 } from '@colanode/core';
 import { AccountAttributes } from '@colanode/server/types/accounts';
 
@@ -32,6 +33,7 @@ interface AccountTable {
   created_at: ColumnType<Date, Date, never>;
   updated_at: ColumnType<Date | null, Date | null, Date>;
   status: ColumnType<number, number, number>;
+  server_role: ColumnType<ServerRole, ServerRole, ServerRole>;
 }
 
 export type SelectAccount = Selectable<AccountTable>;
@@ -72,6 +74,7 @@ interface WorkspaceTable {
   api_enabled: ColumnType<boolean, boolean, boolean>;
   storage_limit: ColumnType<string | null, string | null, string | null>;
   max_file_size: ColumnType<string | null, string | null, string | null>;
+  deleted_at: ColumnType<Date | null, Date | null, Date | null>;
 }
 
 export type SelectWorkspace = Selectable<WorkspaceTable>;

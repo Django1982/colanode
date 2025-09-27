@@ -31,6 +31,7 @@ import {
   AccountMetadata,
   AccountMetadataKey,
 } from '@colanode/client/types/accounts';
+import { ServerRole, WorkspaceStatus } from '@colanode/core';
 import { AppMetadata, AppMetadataKey } from '@colanode/client/types/apps';
 import { Avatar } from '@colanode/client/types/avatars';
 import {
@@ -131,6 +132,7 @@ export const mapAccount = (row: SelectAccount): Account => {
     deviceId: row.device_id,
     email: row.email,
     token: row.token,
+    serverRole: (row.server_role as ServerRole | null) ?? 'member',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     syncedAt: row.synced_at,
@@ -148,6 +150,12 @@ export const mapWorkspace = (row: SelectWorkspace): Workspace => {
     description: row.description,
     maxFileSize: row.max_file_size,
     storageLimit: row.storage_limit,
+    status:
+      row.status === null || row.status === undefined
+        ? WorkspaceStatus.Active
+        : (row.status as WorkspaceStatus),
+    deletedAt: row.deleted_at ?? null,
+    apiEnabled: Boolean(row.api_enabled),
   };
 };
 

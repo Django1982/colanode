@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./types": "./src/types/index.ts",
+    "./types/*": "./src/types/*.ts",
     "./lib": "./src/lib/index.ts",
     "./handlers": "./src/handlers/index.ts",
     "./databases": "./src/databases/index.ts",

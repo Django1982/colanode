@@ -5,23 +5,35 @@ import {
   SidebarMenuType,
   SidebarMetadata,
 } from '@colanode/client/types';
+import { useAccount } from '@colanode/ui/contexts/account';
 import { useWorkspace } from '@colanode/ui/contexts/workspace';
 import { useWindowSize } from '@colanode/ui/hooks/use-window-size';
 import { percentToNumber } from '@colanode/ui/lib/utils';
 
 export const useLayoutState = () => {
   const workspace = useWorkspace();
+  const account = useAccount();
   const windowSize = useWindowSize();
 
   const [activeContainer, setActiveContainer] = useState<'left' | 'right'>(
     'left'
   );
 
+  const storedSidebarMetadata = workspace.getMetadata('sidebar')?.value;
+  const initialSidebarMetadata: SidebarMetadata = {
+    menu: storedSidebarMetadata?.menu ?? 'spaces',
+    width: storedSidebarMetadata?.width ?? 300,
+  };
+
+  if (
+    initialSidebarMetadata.menu === 'admin' &&
+    account.serverRole !== 'administrator'
+  ) {
+    initialSidebarMetadata.menu = 'spaces';
+  }
+
   const [sidebarMetadata, setSidebarMetadata] = useState<SidebarMetadata>(
-    workspace.getMetadata('sidebar')?.value ?? {
-      menu: 'spaces',
-      width: 300,
-    }
+    initialSidebarMetadata
   );
 
   const [leftContainerMetadata, setLeftContainerMetadata] =
@@ -76,6 +88,10 @@ export const useLayoutState = () => {
 
   const handleMenuChange = useCallback(
     (menu: SidebarMenuType) => {
+      if (menu === 'admin' && account.serverRole !== 'administrator') {
+        return;
+      }
+
       setSidebarMetadata({
         ...sidebarMetadata,
         menu,

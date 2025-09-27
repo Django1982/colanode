@@ -25,6 +25,7 @@ interface AccountTable {
   avatar: ColumnType<string | null, string | null, string | null>;
   token: ColumnType<string, string, string>;
   device_id: ColumnType<string, string, never>;
+  server_role: ColumnType<string, string, string>;
   created_at: ColumnType<string, string, string>;
   updated_at: ColumnType<string | null, string | null, string | null>;
   synced_at: ColumnType<string | null, string | null, string | null>;

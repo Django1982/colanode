@@ -1,4 +1,5 @@
 export * from './accounts';
+export * from './admin';
 export * from './apps';
 export * from './databases';
 export * from './documents';
@@ -14,3 +15,4 @@ export * from './servers';
 export * from './themes';
 export * from './users';
 export * from './workspaces';
+export * from './admin';

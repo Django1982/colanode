@@ -8,6 +8,7 @@ import {
   apiErrorOutputSchema,
   loginOutputSchema,
   emailRegisterInputSchema,
+  ServerRole,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { SelectAccount } from '@colanode/server/data/schema';
@@ -62,6 +63,17 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
           ? AccountStatus.Active
           : AccountStatus.Unverified;
 
+      const hasAdministrator = await database
+        .selectFrom('accounts')
+        .select('id')
+        .where('server_role', '=', 'administrator')
+        .limit(1)
+        .executeTakeFirst();
+
+      const defaultServerRole: ServerRole = hasAdministrator
+        ? 'member'
+        : 'administrator';
+
       if (existingAccount) {
         if (existingAccount.status !== AccountStatus.Pending) {
           return reply.code(400).send({
@@ -77,6 +89,9 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
             name: input.name,
             updated_at: new Date(),
             status: status,
+            server_role:
+              (existingAccount.server_role as ServerRole | null) ??
+              defaultServerRole,
           })
           .where('id', '=', existingAccount.id)
           .returningAll()
@@ -91,6 +106,7 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
             password: password,
             status: status,
             created_at: new Date(),
+            server_role: defaultServerRole,
           })
           .returningAll()
           .executeTakeFirst();

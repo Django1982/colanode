@@ -8,6 +8,7 @@ import {
   UserStatus,
   apiErrorOutputSchema,
   workspaceOutputSchema,
+  WorkspaceStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 
@@ -46,6 +47,13 @@ export const workspaceGetRoute: FastifyPluginCallbackZod = (
         });
       }
 
+      if (workspace.status !== WorkspaceStatus.Active) {
+        return reply.code(404).send({
+          code: ApiErrorCode.WorkspaceNotFound,
+          message: 'Workspace not found.',
+        });
+      }
+
       const user = await database
         .selectFrom('users')
         .selectAll()
@@ -66,6 +74,8 @@ export const workspaceGetRoute: FastifyPluginCallbackZod = (
         description: workspace.description,
         avatar: workspace.avatar,
         apiEnabled: workspace.api_enabled ?? false,
+        status: workspace.status as WorkspaceStatus,
+        deletedAt: workspace.deleted_at?.toISOString() ?? null,
         user: {
           id: user.id,
           accountId: user.account_id,

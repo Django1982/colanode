@@ -12,6 +12,9 @@ interface WorkspaceTable {
   role: ColumnType<WorkspaceRole, WorkspaceRole, WorkspaceRole>;
   storage_limit: ColumnType<string, string, string>;
   max_file_size: ColumnType<string, string, string>;
+  status: ColumnType<number, number, number>;
+  deleted_at: ColumnType<string | null, string | null, string | null>;
+  api_enabled: ColumnType<number, number, number>;
   created_at: ColumnType<string, string, never>;
 }
 

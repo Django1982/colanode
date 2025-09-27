@@ -1,6 +1,7 @@
 import { sha256 } from 'js-sha256';
 
 import { database } from '@colanode/server/data/database';
+import { ServerRole } from '@colanode/core';
 import { uuid } from '@colanode/server/lib/utils';
 import { RequestAccount } from '@colanode/server/types/api';
 
@@ -74,11 +75,24 @@ export const verifyToken = async (
     };
   }
 
+  const account = await database
+    .selectFrom('accounts')
+    .select(['id', 'server_role'])
+    .where('id', '=', device.account_id)
+    .executeTakeFirst();
+
+  if (!account) {
+    return {
+      authenticated: false,
+    };
+  }
+
   return {
     authenticated: true,
     account: {
-      id: device.account_id,
+      id: account.id,
       deviceId: device.id,
+      serverRole: account.server_role as ServerRole,
     },
   };
 };

@@ -32,6 +32,7 @@ import { addWorkspaceStorageLimitColumns } from './00029-add-workspace-storage-l
 import { addWorkspaceIndexToUploads } from './00030-add-workspace-index-to-uploads';
 import { addCreatedAtIndexToUploads } from './00031-add-created-at-index-to-uploads';
 import { addApiTokensAndAuditLogs } from './00032-add-api-tokens-and-audit-logs';
+import { addServerRoleAndSoftDelete } from './00033-add-server-role-and-soft-delete';
 
 export const databaseMigrations: Record<string, Migration> = {
   '00001_create_accounts_table': createAccountsTable,
@@ -70,4 +71,5 @@ export const databaseMigrations: Record<string, Migration> = {
   '00030_add_workspace_index_to_uploads': addWorkspaceIndexToUploads,
   '00031_add_created_at_index_to_uploads': addCreatedAtIndexToUploads,
   '00032_add_api_tokens_and_audit_logs': addApiTokensAndAuditLogs,
+  '00033_add_server_role_and_soft_delete': addServerRoleAndSoftDelete,
 };

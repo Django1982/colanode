@@ -45,6 +45,8 @@ export const workspaceOutputSchema = z.object({
   avatar: z.string().nullable().optional(),
   user: workspaceUserOutputSchema,
   apiEnabled: z.boolean().optional(),
+  status: z.nativeEnum(WorkspaceStatus).optional(),
+  deletedAt: z.string().nullable().optional(),
 });
 
 export type WorkspaceOutput = z.infer<typeof workspaceOutputSchema>;

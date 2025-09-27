@@ -179,6 +179,7 @@ const getOrCreateAccount = async (
       status: AccountStatus.Pending,
       created_at: new Date(),
       updated_at: null,
+      server_role: 'member',
     })
     .executeTakeFirst();
 

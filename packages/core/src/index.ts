@@ -26,6 +26,7 @@ export * from './types/sockets';
 export * from './types/servers';
 export * from './types/workspaces';
 export * from './types/mutations';
+export * from './types/admin';
 export * from './synchronizers';
 export * from './lib/nodes';
 export * from './lib/texts';

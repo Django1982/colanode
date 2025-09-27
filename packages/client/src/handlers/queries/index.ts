@@ -5,6 +5,8 @@ import { AppService } from '@colanode/client/services/app-service';
 import { AccountGetQueryHandler } from './accounts/account-get';
 import { AccountMetadataListQueryHandler } from './accounts/account-metadata-list';
 import { AccountListQueryHandler } from './accounts/accounts-list';
+import { AdminAccountsListQueryHandler } from './admin/accounts-list';
+import { AdminWorkspacesListQueryHandler } from './admin/workspaces-list';
 import { AppMetadataListQueryHandler } from './apps/app-metadata-list';
 import { AvatarGetQueryHandler } from './avatars/avatar-get';
 import { ChatListQueryHandler } from './chats/chat-list';
@@ -60,6 +62,8 @@ export const buildQueryHandlerMap = (app: AppService): QueryHandlerMap => {
     'app.metadata.list': new AppMetadataListQueryHandler(app),
     'avatar.get': new AvatarGetQueryHandler(app),
     'account.list': new AccountListQueryHandler(app),
+    'admin.accounts.list': new AdminAccountsListQueryHandler(app),
+    'admin.workspaces.list': new AdminWorkspacesListQueryHandler(app),
     'message.list': new MessageListQueryHandler(app),
     'node.reaction.list': new NodeReactionsListQueryHandler(app),
     'node.reactions.aggregate': new NodeReactionsAggregateQueryHandler(app),

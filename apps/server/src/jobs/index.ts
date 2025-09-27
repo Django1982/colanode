@@ -10,6 +10,7 @@ import { nodeEmbedScanHandler } from '@colanode/server/jobs/node-embed-scan';
 import { nodeUpdatesMergeHandler } from '@colanode/server/jobs/node-updates-merge';
 import { uploadsCleanHandler } from '@colanode/server/jobs/uploads-clean';
 import { workspaceCleanHandler } from '@colanode/server/jobs/workspace-clean';
+import { auditLogCleanupHandler } from '@colanode/server/jobs/audit-clean';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface JobMap {}
@@ -35,4 +36,5 @@ export const jobHandlerMap: JobHandlerMap = {
   'node.updates.merge': nodeUpdatesMergeHandler,
   'document.updates.merge': documentUpdatesMergeHandler,
   'uploads.clean': uploadsCleanHandler,
+  'audit.log.cleanup': auditLogCleanupHandler,
 };
