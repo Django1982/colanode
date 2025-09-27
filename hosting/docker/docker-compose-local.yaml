@@ -23,7 +23,7 @@ services:
     container_name: colanode_server_local
     restart: unless-stopped
     env_file:
-      - ./.env
+      - ./defaults.env
     environment:
       NODE_ENV: ${NODE_ENV:-production}
     ports:
@@ -83,6 +83,22 @@ services:
       - '9001:9001'
     command: >-
       sh -c "mkdir -p /data/colanode && minio server /data --address ':9000' --console-address ':9001'"
+    networks:
+      - colanode_network
+
+  web:
+    <<: *base
+    image: ghcr.io/colanode/web:latest
+    container_name: colanode_web
+    restart: unless-stopped
+    env_file:
+      - ./defaults.env
+    environment:
+      VITE_SERVER_URL: http://server:3000
+    depends_on:
+      - server
+    ports:
+      - '4000:80'
     networks:
       - colanode_network
 
