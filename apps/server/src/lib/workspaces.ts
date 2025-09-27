@@ -36,6 +36,7 @@ export const createWorkspace = async (
       created_at: date,
       created_by: account.id,
       status: WorkspaceStatus.Active,
+      api_enabled: false,
       storage_limit: config.workspace.storageLimit,
       max_file_size: config.workspace.maxFileSize,
     })
@@ -154,6 +155,7 @@ export const createWorkspace = async (
     name: workspace.name,
     description: workspace.description,
     avatar: workspace.avatar,
+    apiEnabled: workspace.api_enabled,
     user: {
       id: user.id,
       accountId: user.account_id,

@@ -40,7 +40,7 @@ export const workspaceGetRoute: FastifyPluginCallbackZod = (
         .executeTakeFirst();
 
       if (!workspace) {
-        return reply.code(400).send({
+        return reply.code(404).send({
           code: ApiErrorCode.WorkspaceNotFound,
           message: 'Workspace not found.',
         });
@@ -65,6 +65,7 @@ export const workspaceGetRoute: FastifyPluginCallbackZod = (
         name: workspace.name,
         description: workspace.description,
         avatar: workspace.avatar,
+        apiEnabled: workspace.api_enabled ?? false,
         user: {
           id: user.id,
           accountId: user.account_id,

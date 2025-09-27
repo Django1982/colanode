@@ -11,6 +11,8 @@ import { workspaceCreateRoute } from './workspace-create';
 import { workspaceDeleteRoute } from './workspace-delete';
 import { workspaceGetRoute } from './workspace-get';
 import { workspaceUpdateRoute } from './workspace-update';
+import { workspaceApiTokenRoutes } from './api-tokens';
+import { workspaceApiSettingsRoute } from './api-settings';
 
 export const workspaceRoutes: FastifyPluginCallback = (instance, _, done) => {
   instance.register(accountAuthenticator);
@@ -29,6 +31,10 @@ export const workspaceRoutes: FastifyPluginCallback = (instance, _, done) => {
       subInstance.register(userRoutes, { prefix: '/users' });
       subInstance.register(mutationsRoutes, { prefix: '/mutations' });
       subInstance.register(storageRoutes, { prefix: '/storage' });
+      subInstance.register(workspaceApiTokenRoutes, { prefix: '/api-tokens' });
+      subInstance.register(workspaceApiSettingsRoute, {
+        prefix: '/api-settings',
+      });
     },
     {
       prefix: '/:workspaceId',

@@ -69,6 +69,7 @@ interface WorkspaceTable {
   created_by: ColumnType<string, string, never>;
   updated_by: ColumnType<string | null, string | null, string>;
   status: ColumnType<number, number, number>;
+  api_enabled: ColumnType<boolean, boolean, boolean>;
   storage_limit: ColumnType<string | null, string | null, string | null>;
   max_file_size: ColumnType<string | null, string | null, string | null>;
 }
@@ -300,6 +301,47 @@ export type SelectDocumentEmbedding = Selectable<DocumentEmbeddingTable>;
 export type CreateDocumentEmbedding = Insertable<DocumentEmbeddingTable>;
 export type UpdateDocumentEmbedding = Updateable<DocumentEmbeddingTable>;
 
+interface ApiTokenTable {
+  id: ColumnType<string, string, never>;
+  workspace_id: ColumnType<string, string, never>;
+  user_id: ColumnType<string, string, never>;
+  name: ColumnType<string, string, string>;
+  description: ColumnType<string | null, string | null, string | null>;
+  scopes: ColumnType<string[], string[], string[]>;
+  token_prefix: ColumnType<string, string, string>;
+  token_salt: ColumnType<string, string, string>;
+  token_hash: ColumnType<string, string, string>;
+  expires_at: ColumnType<Date | null, Date | null, Date | null>;
+  last_rotated_at: ColumnType<Date | null, Date | null, Date | null>;
+  last_used_at: ColumnType<Date | null, Date | null, Date | null>;
+  disabled_at: ColumnType<Date | null, Date | null, Date | null>;
+  created_at: ColumnType<Date, Date, never>;
+  created_by: ColumnType<string | null, string | null, string | null>;
+}
+
+export type SelectApiToken = Selectable<ApiTokenTable>;
+export type CreateApiToken = Insertable<ApiTokenTable>;
+export type UpdateApiToken = Updateable<ApiTokenTable>;
+
+interface AuditLogTable {
+  id: ColumnType<string, string, never>;
+  workspace_id: ColumnType<string | null, string | null, string | null>;
+  user_id: ColumnType<string | null, string | null, string | null>;
+  account_id: ColumnType<string | null, string | null, string | null>;
+  api_token_id: ColumnType<string | null, string | null, string | null>;
+  action: ColumnType<string, string, string>;
+  resource_type: ColumnType<string, string, string>;
+  resource_id: ColumnType<string | null, string | null, string | null>;
+  metadata: JSONColumnType<Record<string, unknown> | null, string | null, string | null>;
+  ip_address: ColumnType<string | null, string | null, string | null>;
+  user_agent: ColumnType<string | null, string | null, string | null>;
+  created_at: ColumnType<Date, Date, never>;
+}
+
+export type SelectAuditLog = Selectable<AuditLogTable>;
+export type CreateAuditLog = Insertable<AuditLogTable>;
+export type UpdateAuditLog = Updateable<AuditLogTable>;
+
 interface CounterTable {
   key: ColumnType<string, string, never>;
   value: ColumnType<string, string, string>;
@@ -324,5 +366,7 @@ export interface DatabaseSchema {
   uploads: UploadTable;
   node_embeddings: NodeEmbeddingTable;
   document_embeddings: DocumentEmbeddingTable;
+  api_tokens: ApiTokenTable;
+  audit_logs: AuditLogTable;
   counters: CounterTable;
 }

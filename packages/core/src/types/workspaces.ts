@@ -44,6 +44,7 @@ export const workspaceOutputSchema = z.object({
   description: z.string().nullable().optional(),
   avatar: z.string().nullable().optional(),
   user: workspaceUserOutputSchema,
+  apiEnabled: z.boolean().optional(),
 });
 
 export type WorkspaceOutput = z.infer<typeof workspaceOutputSchema>;

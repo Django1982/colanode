@@ -74,6 +74,7 @@ export const workspaceUpdateRoute: FastifyPluginCallbackZod = (
         name: updatedWorkspace.name,
         description: updatedWorkspace.description,
         avatar: updatedWorkspace.avatar,
+        apiEnabled: updatedWorkspace.api_enabled ?? false,
         user: {
           id: request.user.id,
           accountId: request.user.account_id,

@@ -2,6 +2,7 @@ import { z } from 'zod/v4';
 
 import { accountConfigSchema, readAccountConfigVariables } from './account';
 import { aiConfigSchema, readAiConfigVariables } from './ai';
+import { apiConfigSchema, readApiConfigVariables } from './api';
 import { jobsConfigSchema, readJobsConfigVariables } from './jobs';
 import { loggingConfigSchema, readLoggingConfigVariables } from './logging';
 import { postgresConfigSchema, readPostgresConfigVariables } from './postgres';
@@ -18,6 +19,7 @@ import {
 const configSchema = z.object({
   server: serverConfigSchema,
   account: accountConfigSchema,
+  api: apiConfigSchema,
   user: userConfigSchema,
   postgres: postgresConfigSchema,
   redis: redisConfigSchema,
@@ -36,6 +38,7 @@ const readConfigVariables = (): Configuration => {
     const input = {
       server: readServerConfigVariables(),
       account: readAccountConfigVariables(),
+      api: readApiConfigVariables(),
       user: readUserConfigVariables(),
       postgres: readPostgresConfigVariables(),
       redis: readRedisConfigVariables(),

@@ -27,6 +27,7 @@ export enum ApiErrorCode {
   WorkspaceNoAccess = 'workspace_no_access',
   WorkspaceUpdateNotAllowed = 'workspace_update_not_allowed',
   WorkspaceUpdateFailed = 'workspace_update_failed',
+  WorkspaceApiNotEnabled = 'workspace_api_not_enabled',
   FileNotFound = 'file_not_found',
   FileNoAccess = 'file_no_access',
   FileNotReady = 'file_not_ready',
@@ -50,6 +51,9 @@ export enum ApiErrorCode {
   UserNotFound = 'user_not_found',
   TokenMissing = 'token_missing',
   TokenInvalid = 'token_invalid',
+  TokenExpired = 'token_expired',
+  TokenRevoked = 'token_revoked',
+  TokenScopeMissing = 'token_scope_missing',
   RootNotFound = 'root_not_found',
 
   ValidationError = 'validation_error',
@@ -60,6 +64,19 @@ export enum ApiErrorCode {
   BadRequest = 'bad_request',
   Unknown = 'unknown',
 }
+
+export enum ApiTokenScope {
+  Read = 'read',
+  Write = 'write',
+}
+
+export const apiTokenScopeSchema = z.nativeEnum(ApiTokenScope);
+
+export const apiTokenScopeArraySchema = z
+  .array(apiTokenScopeSchema)
+  .nonempty();
+
+export type ApiTokenScopeValue = z.infer<typeof apiTokenScopeSchema>;
 
 export const apiErrorOutputSchema = z.object({
   message: z.string(),

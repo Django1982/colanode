@@ -1,0 +1,96 @@
+version: '3.8'
+
+x-base: &base
+  deploy:
+    resources:
+      limits:
+        cpus: "3.5"
+        memory: 2000m
+  pids_limit: 200
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
+  security_opt:
+    - no-new-privileges=true
+    
+name: "Colanode local test"
+
+services:
+  server:
+    <<: *base
+    image: django01/colanode:local
+    container_name: colanode_server_local
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - valkey
+      - minio
+    networks:
+      - colanode_network
+
+  postgres:
+    <<: *base
+    image: pgvector/pgvector:pg17
+    container_name: colanode_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-colanode_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespass123}
+      POSTGRES_DB: ${POSTGRES_DB:-colanode_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - colanode_network
+
+  valkey:
+    <<: *base
+    image: valkey/valkey:8.1
+    container_name: colanode_valkey
+    restart: unless-stopped
+    command: ['valkey-server', '--requirepass', '${REDIS_PASSWORD:-your_valkey_password}']
+    volumes:
+      - valkey_data:/data
+    ports:
+      - '6379:6379'
+    networks:
+      - colanode_network
+
+  minio:
+    <<: *base
+    image: minio/minio:RELEASE.2025-04-08T15-41-24Z
+    container_name: colanode_minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${STORAGE_S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${STORAGE_S3_SECRET_KEY:-your_minio_password}
+      MINIO_BROWSER: 'on'
+      MINIO_DOMAIN: minio
+      MINIO_ADDRESS: ':9000'
+      MINIO_CONSOLE_ADDRESS: ':9001'
+    volumes:
+      - minio_data:/data
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    command: >-
+      sh -c "mkdir -p /data/colanode && minio server /data --address ':9000' --console-address ':9001'"
+    networks:
+      - colanode_network
+
+volumes:
+  postgres_data:
+  valkey_data:
+  minio_data:
+
+networks:
+  colanode_network:
+    driver: bridge
