@@ -21,13 +21,10 @@ export const serverConfigSchema = z.object({
 export type ServerConfig = z.infer<typeof serverConfigSchema>;
 
 export const readServerConfigVariables = () => {
-  const version = process.env.SERVER_VERSION ?? build.version;
-  const sha = process.env.SERVER_SHA ?? build.sha;
-  const name = process.env.SERVER_NAME ?? 'Colanode Server';
   return {
-    version,
-    sha,
-    name,
+    version: build.version,
+    sha: build.sha,
+    name: process.env.SERVER_NAME,
     avatar: process.env.SERVER_AVATAR,
     mode: process.env.SERVER_MODE,
     pathPrefix: process.env.SERVER_PATH_PREFIX,

@@ -1,3 +1,24 @@
+
+# Session Debrief – 2025-09-27 16:36 UTC
+
+## Key Deliverables
+- Restored `/config` output to the upstream baseline by reverting server version/sha overrides so responses mirror `colanode_org`.
+
+## Outstanding Work
+- Upgrade to Node ≥20 (preferably Node 22.12+) and rerun `npm install` to unblock lint/build scripts.
+- After upgrading, run `npm run lint`, `npm run build -w @colanode/server`, and `npm run build -w @colanode/web` to confirm no regressions.
+
+## Next Session Resume
+- Provision a Node ≥20 toolchain (nvm/asdf/system) before installing dependencies.
+- Execute `npm install`, then run the lint/build commands above.
+- Recheck `/config` in staging once redeployed to ensure the reverted payload is served externally.
+
+## Error Log
+- No new automated checks run; lint/build remain pending until the Node toolchain is upgraded.
+
+## Notes
+- `SERVER_VERSION` and `SERVER_SHA` environment overrides are no longer consumed; the server now reports build metadata directly like the upstream reference.
+
 # Session Debrief – 2025-09-27 23:55 UTC
 
 ## Key Deliverables
@@ -12,7 +33,7 @@
 ## Next Session Resume
 - Use Node ≥20: `nvm use 20 && npm install` (root) before rerunning `npm run build -w @colanode/server` / Docker image builds.
 - After install, re-run `npm run lint` and `npm run build -w @colanode/web` to verify no regressions.
-- Last commit hash: 449811a088e3e03c6bdfb8abb2243fd0bc57d932
+- Last commit hash: 017932ff9ad68231e1ad483e876552c4828369b4
 
 ## Error Log
 - `npm run build -w @colanode/server` → `tsc: not found` (current environment lacks global TypeScript binary).
