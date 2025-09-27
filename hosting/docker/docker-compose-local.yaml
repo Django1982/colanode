@@ -88,7 +88,7 @@ services:
 
   web:
     <<: *base
-    image: ghcr.io/colanode/web:latest
+    image: django01/colanode-web:local
     container_name: colanode_web
     restart: unless-stopped
     env_file:

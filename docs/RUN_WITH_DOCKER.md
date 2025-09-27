@@ -36,20 +36,21 @@ Follow the steps below depending on how you want to deploy.
 
 ---
 
-## 3. Using a Local Server Image (`django01/colanode.local`)
+## 3. Using Local Server & Web Images
 
-1. Build the image at repo root:
+1. Build both images at the repository root:
    ```bash
    docker build -f apps/server/Dockerfile -t django01/colanode:local .
+   docker build -f apps/web/Dockerfile -t django01/colanode-web:local .
    ```
 
-2. Switch to the Docker directory and launch with the local compose file:
+2. Switch to the Docker directory and launch with the local compose file (which now references the local images for both server and web):
    ```bash
    cd hosting/docker
    docker compose -f docker-compose-local.yaml --env-file defaults.env up -d
    ```
 
-3. The stack uses the same ports and dependencies as the default compose file; only the server image differs.
+3. The stack uses the same ports and dependencies as the default compose file; both server (`django01/colanode:local`) and web (`django01/colanode-web:local`) images come from your local build.
 
 4. Stop the stack:
    ```bash
