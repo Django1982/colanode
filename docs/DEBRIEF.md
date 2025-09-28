@@ -1,3 +1,34 @@
+## Human Tests (2025-09-25 10:40)
+- ✅ Signup → Admin-Auto-Elevation verified
+- 🚫 Password reset mail (Mail server missing)
+- ⚠️ Workspace restore works, ownership assignment missing
+- ⚠️ Audit logs only DB, missing UI + file logs
+- ❓ Config pathPrefix serialization unclear
+- 🚫 API token creation not testable (option missing)
+- ⚠️ Redis stop → /health fails hard (consider removal from endpoint)
+
+# Session Debrief – 2025-09-28 17:00 CEST
+
+## Key Deliverables
+- Tightened audit log metadata schema and normalization to satisfy TS2554/TS2345.
+- Guarded next-cursor selection flow to remove TS2532 risk in admin audit logs route.
+- Logged progress in STATUS.md for each TypeScript fix phase.
+
+## Outstanding Work
+- Run containerized compile (`tsc`) to mirror CI once other pending workspace changes settle.
+- Exercise admin audit log query from client UI after the feature wiring lands.
+
+## Next Session Resume
+- Revalidate the admin audit logs API via REST request and confirm pagination cursor handling.
+- Sync audit-log UI work with newly normalized metadata payloads.
+
+## Error Log
+- `rg` missing in environment (fallback to `grep`).
+- Initial `sleep 60` attempt hit default timeout; reran with extended timeout successfully.
+
+## Notes
+- Introduced `normalizeMetadata` helper to ensure only object metadata propagates to API responses.
+- Next cursor guard keeps TypeScript satisfied without altering pagination behavior.
 
 # Session Debrief – 2025-09-28 10:25 CEST
 

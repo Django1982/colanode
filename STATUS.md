@@ -38,3 +38,33 @@
 2025-09-28 10:58 CEST - Hardened email/google signup to ignore non-active admins so first registrant auto-activates as administrator.
 2025-09-28 11:00 CEST - Registered health endpoint with path prefix alias and aligned /config fetch paths for web client.
 2025-09-28 11:02 CEST - npm run lint -w @colanode/server succeeded; @colanode/web lint script missing (not run).
+2025-09-28 12:01 CEST - Completed FIXES batch 1: SMTP dev outbox, web lint pass, optional Redis health.
+2025-09-28 12:01 CEST - Remaining FIXES: API token UI, audit log surfacing.
+2025-09-28 12:30 CEST - Starting batch 2: workspace API enable toggle and token management UI.
+2025-09-28 12:45 CEST - Implemented owner-only workspace API enable toggle and client mutation wiring.
+2025-09-28 12:52 CEST - Added workspace API tokens query definitions.
+2025-09-28 12:54 CEST - Added workspace API tokens query handler.
+2025-09-28 12:56 CEST - Linked workspace API tokens query export.
+2025-09-28 12:58 CEST - Registered workspace API tokens query handler.
+2025-09-28 13:00 CEST - Added workspace API tokens mutation definitions.
+2025-09-28 13:02 CEST - Exported workspace API tokens mutations.
+2025-09-28 13:04 CEST - Added workspace API tokens mutation handlers.
+2025-09-28 13:06 CEST - Registered workspace API tokens mutation handlers.
+2025-09-28 13:08 CEST - Added workspace API tokens tab path.
+2025-09-28 13:10 CEST - Added workspace API tokens tab UI component.
+2025-09-28 13:12 CEST - Linked workspace API tokens tab into container tabs.
+2025-09-28 13:14 CEST - Added API tokens shortcut to workspace settings sidebar.
+2025-09-28 13:16 CEST - Adjusted token rotation to retain current expiry configuration.
+2025-09-28 13:18 CEST - Cleaned workspace API tokens handler imports.
+2025-09-28 13:20 CEST - Drafted audit log surfacing plan: add admin audit list route + query, wire admin sidebar table with filtering/pagination.
+2025-09-28 13:22 CEST - Added admin audit log list endpoint (cursor + filters).
+2025-09-28 13:24 CEST - Registered audit log admin route.
+2025-09-28 13:26 CEST - Added admin audit log query types.
+2025-09-28 13:28 CEST - Added admin audit log query handler scaffold.
+2025-09-28 13:30 CEST - Exported admin audit log query types.
+2025-09-28 13:32 CEST - Registered admin audit log query handler.
+2025-09-28 13:34 CEST - Added admin audit log table component scaffold.
+2025-09-28 13:36 CEST - Integrated audit log tab in admin sidebar with filters and pagination.
+2025-09-28 16:48 CEST - Added audit metadata key schema to resolve TS2554 in admin audit logs route.
+2025-09-28 16:58 CEST - Normalized audit metadata mapping to satisfy TS2345 in admin audit logs route.
+2025-09-28 17:00 CEST - Guarded next cursor selection to eliminate TS2532 in admin audit logs route.
