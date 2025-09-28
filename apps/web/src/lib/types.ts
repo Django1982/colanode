@@ -3,6 +3,7 @@ import { MutationInput, MutationResult } from '@colanode/client/mutations';
 import { QueryInput, QueryMap } from '@colanode/client/queries';
 import { Event, TempFile } from '@colanode/client/types';
 import { ColanodeWindowApi } from '@colanode/ui';
+export type { ColanodeWindowApi } from '@colanode/ui';
 
 export interface ColanodeWorkerApi {
   init: () => Promise<void>;

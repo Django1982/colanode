@@ -23,7 +23,7 @@ export type RerankedContextItem = {
 
 export type DatabaseFilter = {
   databaseId: string;
-  filters: any[];
+  filters: Record<string, unknown>[];
 };
 
 export type DatabaseFilters = {
@@ -31,11 +31,13 @@ export type DatabaseFilters = {
   filters: DatabaseFilter[];
 };
 
+export type DatabaseSampleRecord = SelectNode;
+
 export type DatabaseContextItem = {
   id: string;
   name: string;
   fields: Record<string, { type: string; name: string }>;
-  sampleRecords: any[];
+  sampleRecords: DatabaseSampleRecord[];
 };
 
 export type UserDetails = {
@@ -73,7 +75,7 @@ export const ResponseState = Annotation.Root({
   topContext: Annotation<Document[]>(),
   finalAnswer: Annotation<string>(),
   citations: Annotation<CitedAnswer['citations']>(),
-  originalMessage: Annotation<any>(),
+  originalMessage: Annotation<SelectNode>(),
   intent: Annotation<'retrieve' | 'no_context'>(),
   databaseContext: Annotation<DatabaseContextItem[]>(),
   databaseFilters: Annotation<DatabaseFilterResult>(),

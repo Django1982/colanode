@@ -2,12 +2,12 @@ import { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { z } from 'zod/v4';
 
 import { ApiErrorCode, NodeAttributes } from '@colanode/core';
-import { database } from '@colanode/server/data/database';
-import { recordAuditLog } from '@colanode/server/lib/audit-logs';
 import {
   WRITE_SCOPE,
   apiTokenAuthenticator,
 } from '@colanode/server/api/rest/plugins/api-token-auth';
+import { database } from '@colanode/server/data/database';
+import { recordAuditLog } from '@colanode/server/lib/audit-logs';
 
 const workspaceSummarySchema = z.object({
   id: z.string(),

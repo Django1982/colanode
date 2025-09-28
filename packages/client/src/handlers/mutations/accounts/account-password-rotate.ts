@@ -1,3 +1,4 @@
+import { parseApiError } from '@colanode/client/lib/ky';
 import { MutationHandler } from '@colanode/client/lib/types';
 import { MutationError, MutationErrorCode } from '@colanode/client/mutations';
 import {
@@ -9,7 +10,6 @@ import type {
   PasswordRotateInput,
   PasswordRotateOutput,
 } from '@colanode/core';
-import { parseApiError } from '@colanode/client/lib/ky';
 
 export class AccountPasswordRotateMutationHandler
   implements MutationHandler<AccountPasswordRotateMutationInput>

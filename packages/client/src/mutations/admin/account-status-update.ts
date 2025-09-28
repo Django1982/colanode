@@ -1,5 +1,5 @@
-import { AccountStatus } from '@colanode/core';
 import { AdminAccountSummary } from '@colanode/client/types/admin';
+import { AccountStatus } from '@colanode/core';
 
 export type AdminAccountStatusUpdateMutationInput = {
   type: 'admin.account.status.update';

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { eventBus } from '@colanode/client/lib';
 import { BrowserNotSupported } from '@colanode/web/components/browser-not-supported';
 import { MobileNotSupported } from '@colanode/web/components/mobile-not-supported';
-import { ColanodeWorkerApi } from '@colanode/web/lib/types';
+import { ColanodeWorkerApi, ColanodeWindowApi } from '@colanode/web/lib/types';
 import { isMobileDevice, isOpfsSupported } from '@colanode/web/lib/utils';
 import { Root } from '@colanode/web/root';
 import DedicatedWorker from '@colanode/web/workers/dedicated?worker';
@@ -27,38 +27,52 @@ const initializeApp = async () => {
   const worker = new DedicatedWorker();
   const workerApi = Comlink.wrap<ColanodeWorkerApi>(worker);
 
-  window.colanode = {
+  type MutationInput = Parameters<ColanodeWorkerApi['executeMutation']>[0];
+  type QueryInput = Parameters<ColanodeWorkerApi['executeQuery']>[0];
+  type QueryKey = Parameters<ColanodeWorkerApi['executeQueryAndSubscribe']>[0];
+  type QueryAndSubscribeInput = Parameters<ColanodeWorkerApi['executeQueryAndSubscribe']>[1];
+  type TempFileInput = Parameters<ColanodeWorkerApi['saveTempFile']>[0];
+  type UnsubscribeKey = Parameters<ColanodeWorkerApi['unsubscribeQuery']>[0];
+  type SubscribeCallback = Parameters<ColanodeWorkerApi['subscribe']>[0];
+
+  const colanodeApi: ColanodeWindowApi = {
     init: async () => {
       await workerApi.init();
     },
-    executeMutation: async (input) => {
+    executeMutation: async (input: MutationInput) => {
       return workerApi.executeMutation(input);
     },
-    executeQuery: async (input) => {
+    executeQuery: async (input: QueryInput) => {
       return workerApi.executeQuery(input);
     },
-    executeQueryAndSubscribe: async (key, input) => {
+    executeQueryAndSubscribe: async (
+      key: QueryKey,
+      input: QueryAndSubscribeInput
+    ) => {
       return workerApi.executeQueryAndSubscribe(key, input);
     },
-    saveTempFile: async (file) => {
+    saveTempFile: async (file: TempFileInput) => {
       return workerApi.saveTempFile(file);
     },
-    unsubscribeQuery: async (queryId) => {
+    unsubscribeQuery: async (queryId: UnsubscribeKey) => {
       return workerApi.unsubscribeQuery(queryId);
     },
-    openExternalUrl: async (url) => {
+    openExternalUrl: async (url: string) => {
       window.open(url, '_blank');
     },
-    showItemInFolder: async () => {
+    showItemInFolder: async (_path: string) => {
       // No-op on web
     },
-    showFileSaveDialog: async () => undefined,
+    showFileSaveDialog: async (_options: Parameters<ColanodeWindowApi['showFileSaveDialog']>[0]) =>
+      undefined,
   };
+
+  window.colanode = colanodeApi;
 
   window.eventBus = eventBus;
 
   workerApi.subscribe(
-    Comlink.proxy((event) => {
+    Comlink.proxy((event: Parameters<SubscribeCallback>[0]) => {
       eventBus.publish(event);
     })
   );

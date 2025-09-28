@@ -2,9 +2,9 @@ import { FastifyPluginCallback } from 'fastify';
 
 import { clientRoutes } from '@colanode/server/api/client/routes';
 import { configGetRoute } from '@colanode/server/api/config';
+import { healthRoutes } from '@colanode/server/api/health';
 import { homeRoute } from '@colanode/server/api/home';
 import { restRoutes } from '@colanode/server/api/rest';
-import { healthRoutes } from '@colanode/server/api/health';
 import { config } from '@colanode/server/lib/config';
 
 export const apiRoutes: FastifyPluginCallback = (instance, _, done) => {

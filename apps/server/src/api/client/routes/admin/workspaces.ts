@@ -119,7 +119,7 @@ export const adminWorkspaceRoutes: FastifyPluginCallbackZod = (
 
       try {
         await jobService.removeJob(`workspace.clean.${workspaceId}`);
-      } catch (error) {
+      } catch {
         // job may not exist; ignore
       }
 
@@ -200,7 +200,7 @@ export const adminWorkspaceRoutes: FastifyPluginCallbackZod = (
       const jobId = `workspace.clean.${workspaceId}`;
       try {
         await jobService.removeJob(jobId);
-      } catch (error) {
+      } catch {
         // ignore if job missing
       }
 

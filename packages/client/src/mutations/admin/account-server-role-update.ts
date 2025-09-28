@@ -1,5 +1,5 @@
-import { ServerRole } from '@colanode/core';
 import { AdminAccountSummary } from '@colanode/client/types/admin';
+import { ServerRole } from '@colanode/core';
 
 export type AdminAccountServerRoleUpdateMutationInput = {
   type: 'admin.account.server-role.update';

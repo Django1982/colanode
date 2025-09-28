@@ -5,16 +5,22 @@ import { z } from 'zod/v4';
 import {
   AccountStatus,
   ApiErrorCode,
+  IdType,
   apiErrorOutputSchema,
-  serverRoleSchema,
-  ServerRole,
   emailPasswordResetCompleteOutputSchema,
+  generateId,
+  ServerRole,
+  serverRoleSchema,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
-import { config } from '@colanode/server/lib/config';
 import { recordAuditLog } from '@colanode/server/lib/audit-logs';
-import { generateOtpCode, saveOtp, Otp, AccountPasswordResetOtpAttributes } from '@colanode/server/lib/otps';
-import { generateId, IdType } from '@colanode/core';
+import { config } from '@colanode/server/lib/config';
+import {
+  AccountPasswordResetOtpAttributes,
+  Otp,
+  generateOtpCode,
+  saveOtp,
+} from '@colanode/server/lib/otps';
 import { jobService } from '@colanode/server/services/job-service';
 
 const accountSummarySchema = z.object({
@@ -51,7 +57,7 @@ export const adminAccountRoutes: FastifyPluginCallbackZod = (
         200: accountListSchema,
       },
     },
-    handler: async (request) => {
+    handler: async () => {
       const accounts = await database
         .selectFrom('accounts')
         .selectAll()

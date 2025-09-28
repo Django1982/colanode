@@ -16,7 +16,6 @@ import {
   SelectApiToken,
   SelectUser,
   SelectWorkspace,
-  UpdateApiToken,
 } from '@colanode/server/data/schema';
 import { config } from '@colanode/server/lib/config';
 import { uuid } from '@colanode/server/lib/utils';

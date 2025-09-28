@@ -1,3 +1,3 @@
-1. Ensure first signup skips verification and lands as active administrator to expose admin console immediately.
-2. Keep later signups behind existing verification policy to preserve manual/email review flow.
-3. Schedule follow-up on password rotation failure surfaced in 20250928 human tests.
+1. Deploy server/web build and rerun human signup to confirm auto-activated administrator exposes console without manual verification.
+2. Add integration guard for database sample-record formatting so AI filter generation can't regress type expectations again.
+3. Schedule manual password rotation regression test after deployment to close out 20250928 failure case.

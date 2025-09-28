@@ -1,9 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
 import { database } from '@colanode/server/data/database';
-import { createLogger } from '@colanode/server/lib/logger';
-import { config } from '@colanode/server/lib/config';
 import { JobHandler } from '@colanode/server/jobs';
+import { config } from '@colanode/server/lib/config';
+import { createLogger } from '@colanode/server/lib/logger';
 
 const logger = createLogger('server:job:audit-clean');
 
@@ -74,11 +74,13 @@ export const auditLogCleanupHandler: JobHandler<AuditLogCleanupInput> = async ()
     }
 
     await writeFile(logPath, filteredLines.join('\n') + '\n');
-  } catch (error: any) {
-    if (error?.code === 'ENOENT') {
+  } catch (error) {
+    const nodeError = error as NodeJS.ErrnoException;
+
+    if (nodeError?.code === 'ENOENT') {
       return;
     }
 
-    logger.error(error, 'Failed to prune audit log file');
+    logger.error(nodeError, 'Failed to prune audit log file');
   }
 };

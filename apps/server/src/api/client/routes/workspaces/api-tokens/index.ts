@@ -1,11 +1,7 @@
 import { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { z } from 'zod/v4';
 
-import {
-  ApiErrorCode,
-  ApiTokenScope,
-  apiTokenScopeSchema,
-} from '@colanode/core';
+import { ApiErrorCode, apiTokenScopeSchema } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import {
   ApiTokenSummary,
@@ -15,8 +11,8 @@ import {
   rotateApiToken,
   toApiTokenSummary,
 } from '@colanode/server/lib/api-tokens';
-import { config } from '@colanode/server/lib/config';
 import { recordAuditLog } from '@colanode/server/lib/audit-logs';
+import { config } from '@colanode/server/lib/config';
 
 const scopesInputSchema = z.array(apiTokenScopeSchema).nonempty().optional();
 

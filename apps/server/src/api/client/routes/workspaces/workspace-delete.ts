@@ -9,9 +9,9 @@ import {
   UserStatus,
 } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
+import { config } from '@colanode/server/lib/config';
 import { eventBus } from '@colanode/server/lib/event-bus';
 import { jobService } from '@colanode/server/services/job-service';
-import { config } from '@colanode/server/lib/config';
 
 export const workspaceDeleteRoute: FastifyPluginCallbackZod = (
   instance,

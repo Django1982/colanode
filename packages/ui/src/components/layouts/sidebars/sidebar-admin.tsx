@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+
+import {
+  AdminAccountSummary,
+  AdminWorkspaceSummary,
+} from '@colanode/client/types/admin';
+import { AccountStatus, ServerRole, WorkspaceStatus } from '@colanode/core';
 import { Button } from '@colanode/ui/components/ui/button';
 import { Input } from '@colanode/ui/components/ui/input';
 import { Spinner } from '@colanode/ui/components/ui/spinner';
 import { useAccount } from '@colanode/ui/contexts/account';
 import { useMutation } from '@colanode/ui/hooks/use-mutation';
 import { useQuery } from '@colanode/ui/hooks/use-query';
-import { toast } from 'sonner';
 import { cn } from '@colanode/ui/lib/utils';
-import {
-  AdminAccountSummary,
-  AdminWorkspaceSummary,
-} from '@colanode/client/types/admin';
-import { AccountStatus, ServerRole, WorkspaceStatus } from '@colanode/core';
 
 const accountStatusLabels: Record<AccountStatus, string> = {
   [AccountStatus.Pending]: 'Pending',

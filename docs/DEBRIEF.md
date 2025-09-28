@@ -1,4 +1,43 @@
 
+# Session Debrief – 2025-09-28 10:25 CEST
+
+## Key Deliverables
+- Cleared server/client/ui lint suites and compiled server/web bundles under Node 22, fixing import hygiene and assistant typing fallout.
+
+## Outstanding Work
+- Re-run manual admin onboarding + console flows post-deploy to confirm QA coverage from human test plan.
+- Validate database sample-record prompts in AI chain with production data to ensure new typing sticks.
+
+## Next Session Resume
+- Deploy updated build and execute manual smoke (signup, password rotate, admin console) as tracked in human tests.
+- Consider adding automated coverage around database context formatting.
+
+## Error Log
+- None after final lint/build retries (previous import-order and typing issues resolved).
+
+## Notes
+- Node 22 lint/build baseline now green; recorded follow-up actions in FIXES.md.
+
+# Session Debrief – 2025-09-28 09:55 CEST
+
+## Key Deliverables
+- Installed dependencies with Node 22 toolchain and rebuilt core/client/ui packages so server + web builds complete locally.
+
+## Outstanding Work
+- Resolve server lint import-order/unused-variable violations before next check.
+- Clean up implicit `any` usage surfaced by the web TypeScript build.
+
+## Next Session Resume
+- Fix eslint errors in server API routes and rerun `npm run lint`.
+- Tighten web entrypoint typings (`src/main.tsx`) to satisfy `tsc` without suppressions.
+
+## Error Log
+- `npm run lint` → fails on pre-existing import-order + unused variable findings in server routes.
+- `SERVER_VERSION` env probe via `tsx` aborted: runtime requires compiled zod registry; validated builds via compiled outputs instead.
+
+## Notes
+- Builds now succeed after generating shared package declarations; password rotation retest still pending on deployed backend.
+
 # Session Debrief – 2025-09-28 09:21 CEST
 
 ## Key Deliverables

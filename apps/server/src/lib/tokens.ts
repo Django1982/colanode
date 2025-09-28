@@ -1,7 +1,7 @@
 import { sha256 } from 'js-sha256';
 
-import { database } from '@colanode/server/data/database';
 import { ServerRole } from '@colanode/core';
+import { database } from '@colanode/server/data/database';
 import { uuid } from '@colanode/server/lib/utils';
 import { RequestAccount } from '@colanode/server/types/api';
 

@@ -15,4 +15,3 @@ export * from './servers';
 export * from './themes';
 export * from './users';
 export * from './workspaces';
-export * from './admin';

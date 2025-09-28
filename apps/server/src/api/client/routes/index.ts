@@ -1,10 +1,10 @@
 import { FastifyPluginCallback } from 'fastify';
 
 import { accountRoutes } from '@colanode/server/api/client/routes/accounts';
+import { adminRoutes } from '@colanode/server/api/client/routes/admin';
 import { avatarRoutes } from '@colanode/server/api/client/routes/avatars';
 import { socketRoutes } from '@colanode/server/api/client/routes/sockets';
 import { workspaceRoutes } from '@colanode/server/api/client/routes/workspaces';
-import { adminRoutes } from '@colanode/server/api/client/routes/admin';
 
 export const clientRoutes: FastifyPluginCallback = (instance, _, done) => {
   instance.register(socketRoutes, { prefix: '/sockets' });

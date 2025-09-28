@@ -3,9 +3,9 @@ import { FastifyPluginCallback } from 'fastify';
 import { accountAuthenticator } from '@colanode/server/api/client/plugins/account-auth';
 import { authIpRateLimiter } from '@colanode/server/api/client/plugins/auth-ip-rate-limit';
 
+import { accountPasswordRoute } from './account-password';
 import { accountSyncRoute } from './account-sync';
 import { accountUpdateRoute } from './account-update';
-import { accountPasswordRoute } from './account-password';
 import { emailLoginRoute } from './email-login';
 import { emailPasswordResetCompleteRoute } from './email-password-reset-complete';
 import { emailPasswordResetInitRoute } from './email-password-reset-init';

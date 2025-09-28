@@ -1,3 +1,4 @@
+import { parseApiError } from '@colanode/client/lib/ky';
 import { MutationHandler } from '@colanode/client/lib/types';
 import { MutationError, MutationErrorCode } from '@colanode/client/mutations';
 import {
@@ -5,7 +6,6 @@ import {
   AdminAccountPasswordResetMutationOutput,
 } from '@colanode/client/mutations/admin/account-password-reset';
 import { AppService } from '@colanode/client/services/app-service';
-import { parseApiError } from '@colanode/client/lib/ky';
 
 export class AdminAccountPasswordResetMutationHandler
   implements MutationHandler<AdminAccountPasswordResetMutationInput>

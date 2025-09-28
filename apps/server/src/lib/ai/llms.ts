@@ -3,7 +3,7 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOpenAI } from '@langchain/openai';
 
-import { NodeType, RecordNode } from '@colanode/core';
+import { NodeType } from '@colanode/core';
 import {
   queryRewritePrompt,
   summarizationPrompt,
@@ -15,6 +15,7 @@ import {
   chunkSummarizationPrompt,
 } from '@colanode/server/lib/ai/prompts';
 import { config } from '@colanode/server/lib/config';
+import { DatabaseSampleRecord } from '@colanode/server/types/assistant';
 import {
   rerankedDocumentsSchema,
   RerankedDocuments,
@@ -149,7 +150,7 @@ export const generateDatabaseFilters = async (args: {
     id: string;
     name: string;
     fields: Record<string, { type: string; name: string }>;
-    sampleRecords: RecordNode[];
+    sampleRecords: DatabaseSampleRecord[];
   }>;
 }): Promise<DatabaseFilterResult> => {
   const task = 'databaseFilter';
@@ -165,12 +166,19 @@ ${Object.entries(db.fields)
 
 Sample Records:
 ${db.sampleRecords
-  .map(
-    (record, i) =>
-      `${i + 1}. ${Object.entries(record.attributes.fields)
-        .map(([fieldId, value]) => `${db.fields[fieldId]?.name}: ${value}`)
-        .join(', ')}`
-  )
+  .map((record, i) => {
+    const recordAttributes = record.attributes as {
+      fields?: Record<string, unknown>;
+    };
+    const entries = Object.entries(recordAttributes.fields ?? {}).map(
+      ([fieldId, value]) => {
+        const fieldName = db.fields[fieldId]?.name ?? fieldId;
+        return `${fieldName}: ${String(value)}`;
+      }
+    );
+
+    return `${i + 1}. ${entries.join(', ')}`;
+  })
   .join('\n')}
 `
     )

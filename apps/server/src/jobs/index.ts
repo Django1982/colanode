@@ -1,4 +1,5 @@
 import { assistantRespondHandler } from '@colanode/server/jobs/assistant-response';
+import { auditLogCleanupHandler } from '@colanode/server/jobs/audit-clean';
 import { documentEmbedHandler } from '@colanode/server/jobs/document-embed';
 import { documentEmbedScanHandler } from '@colanode/server/jobs/document-embed-scan';
 import { documentUpdatesMergeHandler } from '@colanode/server/jobs/document-updates-merge';
@@ -10,7 +11,6 @@ import { nodeEmbedScanHandler } from '@colanode/server/jobs/node-embed-scan';
 import { nodeUpdatesMergeHandler } from '@colanode/server/jobs/node-updates-merge';
 import { uploadsCleanHandler } from '@colanode/server/jobs/uploads-clean';
 import { workspaceCleanHandler } from '@colanode/server/jobs/workspace-clean';
-import { auditLogCleanupHandler } from '@colanode/server/jobs/audit-clean';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface JobMap {}

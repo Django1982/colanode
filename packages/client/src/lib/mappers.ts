@@ -31,7 +31,6 @@ import {
   AccountMetadata,
   AccountMetadataKey,
 } from '@colanode/client/types/accounts';
-import { ServerRole, WorkspaceStatus } from '@colanode/core';
 import { AppMetadata, AppMetadataKey } from '@colanode/client/types/apps';
 import { Avatar } from '@colanode/client/types/avatars';
 import {
@@ -60,7 +59,7 @@ import {
   WorkspaceMetadata,
   WorkspaceMetadataKey,
 } from '@colanode/client/types/workspaces';
-import { Mutation } from '@colanode/core';
+import { Mutation, ServerRole, WorkspaceStatus } from '@colanode/core';
 
 export const mapUser = (row: SelectUser): User => {
   return {
