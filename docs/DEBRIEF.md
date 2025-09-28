@@ -38,6 +38,28 @@
 ## Notes
 - Builds now succeed after generating shared package declarations; password rotation retest still pending on deployed backend.
 
+# Session Debrief – 2025-09-28 10:55 CEST
+
+## Key Deliverables
+- Hardened email/google signup so the first registrant auto-activates as administrator even with manual verification.
+- Registered `/health` under the server path prefix and adjusted `/config` responses plus web fetch path handling.
+
+## Outstanding Work
+- Redeploy patched server/web and rerun human signup to confirm admin console visibility.
+- Add integration guard for database sample-record formatting to protect AI filters.
+- Schedule manual password rotation regression test post-deployment.
+
+## Next Session Resume
+- Validate `/config` and `/health` endpoints via human test matrix after redeploy.
+- Decide whether to introduce a lint script for `@colanode/web` before broader workspace linting.
+
+## Error Log
+- `npm run lint -w @colanode/web` → missing script (workspace lacks lint task).
+
+## Notes
+- Web client now derives `/config` relative to the served `/client` path to respect path prefixes.
+- `/health` remains available at root while mirroring under any configured prefix for operator tooling.
+
 # Session Debrief – 2025-09-28 09:21 CEST
 
 ## Key Deliverables

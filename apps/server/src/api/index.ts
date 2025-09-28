@@ -16,5 +16,9 @@ export const apiRoutes: FastifyPluginCallback = (instance, _, done) => {
   instance.register(restRoutes, { prefix: `${prefix}/rest/v1` });
   instance.register(healthRoutes);
 
+  if (prefix) {
+    instance.register(healthRoutes, { prefix });
+  }
+
   done();
 };

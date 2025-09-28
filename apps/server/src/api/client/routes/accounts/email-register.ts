@@ -62,6 +62,7 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
         .selectFrom('accounts')
         .select('id')
         .where('server_role', '=', 'administrator')
+        .where('status', '=', AccountStatus.Active)
         .limit(1)
         .executeTakeFirst();
 
@@ -92,9 +93,9 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
             name: input.name,
             updated_at: new Date(),
             status: status,
-            server_role:
-              (existingAccount.server_role as ServerRole | null) ??
-              defaultServerRole,
+            server_role: hasAdministrator
+              ? ((existingAccount.server_role as ServerRole | null) ?? 'member')
+              : 'administrator',
           })
           .where('id', '=', existingAccount.id)
           .returningAll()

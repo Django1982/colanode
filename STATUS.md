@@ -35,3 +35,6 @@
 2025-09-28 10:20 CEST - npm run lint succeeded after import cleanups.
 2025-09-28 10:21 CEST - Rebuilding server and web after lint success.
 2025-09-28 10:25 CEST - Server and web builds complete.
+2025-09-28 10:58 CEST - Hardened email/google signup to ignore non-active admins so first registrant auto-activates as administrator.
+2025-09-28 11:00 CEST - Registered health endpoint with path prefix alias and aligned /config fetch paths for web client.
+2025-09-28 11:02 CEST - npm run lint -w @colanode/server succeeded; @colanode/web lint script missing (not run).

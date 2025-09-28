@@ -182,6 +182,16 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
         .selectAll()
         .executeTakeFirst();
 
+      const activeAdministrator = await database
+        .selectFrom('accounts')
+        .select('id')
+        .where('server_role', '=', 'administrator')
+        .where('status', '=', AccountStatus.Active)
+        .limit(1)
+        .executeTakeFirst();
+
+      const hasActiveAdministrator = Boolean(activeAdministrator);
+
       if (existingAccount) {
         const existingGoogleId = existingAccount.attributes?.googleId;
         if (existingGoogleId && existingGoogleId !== googleUser.id) {
@@ -215,6 +225,10 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
           );
         }
 
+        if (!hasActiveAdministrator && existingAccount.server_role !== 'administrator') {
+          updateAccount.server_role = 'administrator';
+        }
+
         if (Object.keys(updateAccount).length > 0) {
           updateAccount.updated_at = new Date();
           existingAccount = await database
@@ -245,15 +259,8 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
         avatar = await uploadGooglePictureAsAvatar(googleUser.picture);
       }
 
-      const hasAdministrator = await database
-        .selectFrom('accounts')
-        .select('id')
-        .where('server_role', '=', 'administrator')
-        .limit(1)
-        .executeTakeFirst();
-
       const shouldAutoActivate =
-        !hasAdministrator ||
+        !hasActiveAdministrator ||
         googleUser.verified_email ||
         config.account.verificationType === 'automatic';
 
@@ -261,7 +268,7 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
         ? AccountStatus.Active
         : AccountStatus.Unverified;
 
-      const defaultServerRole: ServerRole = hasAdministrator
+      const defaultServerRole: ServerRole = hasActiveAdministrator
         ? 'member'
         : 'administrator';
 

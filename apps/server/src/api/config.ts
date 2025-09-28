@@ -19,7 +19,7 @@ export const configGetRoute: FastifyPluginCallbackZod = (instance, _, done) => {
         version: config.server.version,
         sha: config.server.sha,
         ip: request.client.ip,
-        pathPrefix: config.server.pathPrefix,
+        pathPrefix: config.server.pathPrefix ?? '',
         account: {
           google: config.account.google.enabled
             ? {
