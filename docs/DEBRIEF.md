@@ -1,4 +1,43 @@
 
+# Session Debrief – 2025-09-28 09:21 CEST
+
+## Key Deliverables
+- Session kickoff: reviewed prior debrief and 20250928 human tests to scope admin onboarding + console fixes.
+
+## Outstanding Work
+- Ensure first signup auto-promotes and activates admin per policy.
+- Restore admin console visibility for administrator accounts.
+
+## Next Session Resume
+- Audit server-side onboarding flags and frontend role checks.
+- Plan targeted fixes for password rotation regression.
+
+## Error Log
+- Not yet run.
+
+## Notes
+- Manual tests flagged missing env-driven config data and hidden admin tooling.
+
+# Session Debrief – 2025-09-27 16:45 UTC
+
+## Key Deliverables
+- Reintroduced `SERVER_VERSION`/`SERVER_SHA`/`SERVER_NAME` env overrides when shaping `/config` output, keeping build values as fallbacks and ensuring an empty `pathPrefix` still serializes.
+
+## Outstanding Work
+- Redeploy the server with updated env vars so `/config` reflects the intended metadata.
+- Node ≥20 toolchain still required before rerunning `npm install` + lint/build scripts.
+
+## Next Session Resume
+- Use the containerized Node 22 toolchain for installs and builds (no local npm run needed).
+- After deployment, re-query `/config` (e.g. https://cn-server-dev.djangos-net.de/config) to verify version/sha populate from envs.
+
+## Error Log
+- Automated lint/build not run in-session; blocked on Node upgrade policy.
+
+## Notes
+- `pathPrefix` now defaults to an empty string so the key is present in responses even when unset.
+
+
 # Session Debrief – 2025-09-27 16:36 UTC
 
 ## Key Deliverables

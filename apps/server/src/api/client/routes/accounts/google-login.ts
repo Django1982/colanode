@@ -245,19 +245,21 @@ export const googleLoginRoute: FastifyPluginCallbackZod = (
         avatar = await uploadGooglePictureAsAvatar(googleUser.picture);
       }
 
-      let status = AccountStatus.Unverified;
-      if (googleUser.verified_email) {
-        status = AccountStatus.Active;
-      } else if (config.account.verificationType === 'automatic') {
-        status = AccountStatus.Active;
-      }
-
       const hasAdministrator = await database
         .selectFrom('accounts')
         .select('id')
         .where('server_role', '=', 'administrator')
         .limit(1)
         .executeTakeFirst();
+
+      const shouldAutoActivate =
+        !hasAdministrator ||
+        googleUser.verified_email ||
+        config.account.verificationType === 'automatic';
+
+      const status = shouldAutoActivate
+        ? AccountStatus.Active
+        : AccountStatus.Unverified;
 
       const defaultServerRole: ServerRole = hasAdministrator
         ? 'member'

@@ -58,17 +58,20 @@ export const emailRegisterRoute: FastifyPluginCallbackZod = (
 
       let account: SelectAccount | null | undefined = null;
 
-      const status =
-        config.account.verificationType === 'automatic'
-          ? AccountStatus.Active
-          : AccountStatus.Unverified;
-
       const hasAdministrator = await database
         .selectFrom('accounts')
         .select('id')
         .where('server_role', '=', 'administrator')
         .limit(1)
         .executeTakeFirst();
+
+      const shouldAutoActivate =
+        !hasAdministrator ||
+        config.account.verificationType === 'automatic';
+
+      const status = shouldAutoActivate
+        ? AccountStatus.Active
+        : AccountStatus.Unverified;
 
       const defaultServerRole: ServerRole = hasAdministrator
         ? 'member'
