@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type SVGProps } from 'react';
+import { Building2, ClipboardList, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -7,6 +8,7 @@ import {
 } from '@colanode/client/types/admin';
 import { AccountStatus, ServerRole, WorkspaceStatus } from '@colanode/core';
 import { AdminAuditLogEntry } from '@colanode/client/queries/admin/audit-logs-list';
+import { SidebarHeader } from '@colanode/ui/components/layouts/sidebars/sidebar-header';
 import { Button } from '@colanode/ui/components/ui/button';
 import { Input } from '@colanode/ui/components/ui/input';
 import { Spinner } from '@colanode/ui/components/ui/spinner';
@@ -28,6 +30,30 @@ const workspaceStatusLabels: Record<WorkspaceStatus, string> = {
 };
 
 type AdminTab = 'accounts' | 'workspaces' | 'auditLogs';
+
+interface AdminSection {
+  key: AdminTab;
+  label: string;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+}
+
+const ADMIN_SECTIONS: AdminSection[] = [
+  {
+    key: 'accounts',
+    label: 'Accounts',
+    icon: Users,
+  },
+  {
+    key: 'workspaces',
+    label: 'Workspaces',
+    icon: Building2,
+  },
+  {
+    key: 'auditLogs',
+    label: 'Audit Logs',
+    icon: ClipboardList,
+  },
+];
 
 export const SidebarAdmin = () => {
   const account = useAccount();
@@ -241,117 +267,123 @@ export const SidebarAdmin = () => {
   const isLoadingWorkspaces =
     workspacesQuery.isLoading || workspacesQuery.isFetching;
 
+  const activeSection =
+    ADMIN_SECTIONS.find((section) => section.key === activeTab) ??
+    ADMIN_SECTIONS[0];
+
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
-        <div className="flex gap-2">
-          <Button
-            variant={activeTab === 'accounts' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setActiveTab('accounts')}
-          >
-            Accounts
-          </Button>
-          <Button
-            variant={activeTab === 'workspaces' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setActiveTab('workspaces')}
-          >
-            Workspaces
-          </Button>
-          <Button
-            variant={activeTab === 'auditLogs' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => {
-              setActiveTab('auditLogs');
-            }}
-          >
-            Audit logs
-          </Button>
+    <div className="flex h-full overflow-hidden">
+      <div className="flex w-60 min-w-[15rem] flex-col border-r border-sidebar-border bg-sidebar/80">
+        <div className="px-4 py-4">
+          <SidebarHeader title="Admin Settings" />
         </div>
-        <div className="flex items-center gap-2">
-          {activeTab === 'accounts' ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => accountsQuery.refetch()}
-            >
-              Refresh
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => workspacesQuery.refetch()}
-            >
-              Refresh
-            </Button>
-          )}
-        </div>
+        <nav className="flex flex-1 flex-col gap-1 px-2 pb-4">
+          {ADMIN_SECTIONS.map((section) => (
+            <AdminSettingsNavItem
+              key={section.key}
+              label={section.label}
+              icon={section.icon}
+              active={activeTab === section.key}
+              onClick={() => setActiveTab(section.key)}
+            />
+          ))}
+        </nav>
       </div>
-
-      <div className="p-4 overflow-auto">
-        {activeTab === 'accounts' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold">Accounts</h2>
-              <Input
-                placeholder="Search accounts"
-                value={accountFilter}
-                onChange={(event) => setAccountFilter(event.target.value)}
-                className="max-w-sm"
-              />
-            </div>
-            {isLoadingAccounts ? (
-              <div className="flex h-40 items-center justify-center">
-                <Spinner className="mr-2" /> Loading accounts…
-              </div>
-            ) : (
-              <AccountsTable
-                accounts={filteredAccounts}
-                disableActions={
-                  isUpdatingServerRole ||
-                  isUpdatingAccountStatus ||
-                  isTriggeringReset
-                }
-                onRoleChange={handleServerRoleChange}
-                onStatusChange={handleAccountStatusChange}
-                onPasswordReset={handlePasswordReset}
-              />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
+          <h2 className="text-lg font-semibold">{activeSection.label}</h2>
+          <div className="flex items-center gap-2">
+            {activeTab === 'accounts' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => accountsQuery.refetch()}
+              >
+                Refresh
+              </Button>
+            )}
+            {activeTab === 'workspaces' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => workspacesQuery.refetch()}
+              >
+                Refresh
+              </Button>
+            )}
+            {activeTab === 'auditLogs' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  resetAuditFilters();
+                  auditLogsQuery.refetch();
+                }}
+              >
+                Refresh
+              </Button>
             )}
           </div>
-        )}
+        </div>
 
-        {activeTab === 'workspaces' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold">Workspaces</h2>
-              <Input
-                placeholder="Search workspaces"
-                value={workspaceFilter}
-                onChange={(event) => setWorkspaceFilter(event.target.value)}
-                className="max-w-sm"
-              />
-            </div>
-            {isLoadingWorkspaces ? (
-              <div className="flex h-40 items-center justify-center">
-                <Spinner className="mr-2" /> Loading workspaces…
+        <div className="flex-1 overflow-auto p-4">
+          {activeTab === 'accounts' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-end gap-4">
+                <Input
+                  placeholder="Search accounts"
+                  value={accountFilter}
+                  onChange={(event) => setAccountFilter(event.target.value)}
+                  className="max-w-sm"
+                />
               </div>
-            ) : (
-              <WorkspacesTable
-                workspaces={filteredWorkspaces}
-                disableActions={isRestoringWorkspace || isPurgingWorkspace}
-                onRestore={handleWorkspaceRestore}
-                onPurge={handleWorkspacePurge}
-              />
-            )}
-          </div>
-        )}
+              {isLoadingAccounts ? (
+                <div className="flex h-40 items-center justify-center">
+                  <Spinner className="mr-2" /> Loading accounts…
+                </div>
+              ) : (
+                <AccountsTable
+                  accounts={filteredAccounts}
+                  disableActions={
+                    isUpdatingServerRole ||
+                    isUpdatingAccountStatus ||
+                    isTriggeringReset
+                  }
+                  onRoleChange={handleServerRoleChange}
+                  onStatusChange={handleAccountStatusChange}
+                  onPasswordReset={handlePasswordReset}
+                />
+              )}
+            </div>
+          )}
 
-        {activeTab === 'auditLogs' && (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <h2 className="text-lg font-semibold">Audit logs</h2>
+          {activeTab === 'workspaces' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-end gap-4">
+                <Input
+                  placeholder="Search workspaces"
+                  value={workspaceFilter}
+                  onChange={(event) => setWorkspaceFilter(event.target.value)}
+                  className="max-w-sm"
+                />
+              </div>
+              {isLoadingWorkspaces ? (
+                <div className="flex h-40 items-center justify-center">
+                  <Spinner className="mr-2" /> Loading workspaces…
+                </div>
+              ) : (
+                <WorkspacesTable
+                  workspaces={filteredWorkspaces}
+                  disableActions={isRestoringWorkspace || isPurgingWorkspace}
+                  onRestore={handleWorkspaceRestore}
+                  onPurge={handleWorkspacePurge}
+                />
+              )}
+            </div>
+          )}
+
+          {activeTab === 'auditLogs' && (
+            <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-3">
                 <Input
                   placeholder="Filter by workspace id"
@@ -380,26 +412,29 @@ export const SidebarAdmin = () => {
                     setAuditWorkspaceFilter('');
                     setAuditUserFilter('');
                     resetAuditFilters();
+                    auditLogsQuery.refetch();
                   }}
                 >
                   Reset filters
                 </Button>
               </div>
-            </div>
 
-            <AdminAuditLogTable
-              entries={auditEntries}
-              isLoading={auditLogsQuery.isLoading || auditLogsQuery.isFetching}
-              hasMore={Boolean(auditLogsQuery.data?.nextCursor)}
-              onLoadMore={() => {
-                if (!auditLogsQuery.data?.nextCursor) {
-                  return;
+              <AdminAuditLogTable
+                entries={auditEntries}
+                isLoading={
+                  auditLogsQuery.isLoading || auditLogsQuery.isFetching
                 }
-                setAuditCursor(auditLogsQuery.data.nextCursor);
-              }}
-            />
-          </div>
-        )}
+                hasMore={Boolean(auditLogsQuery.data?.nextCursor)}
+                onLoadMore={() => {
+                  if (!auditLogsQuery.data?.nextCursor) {
+                    return;
+                  }
+                  setAuditCursor(auditLogsQuery.data.nextCursor);
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -607,5 +642,35 @@ const WorkspacesTable = ({
         </tbody>
       </table>
     </div>
+  );
+};
+
+interface AdminSettingsNavItemProps {
+  label: string;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  active: boolean;
+  onClick: () => void;
+}
+
+const AdminSettingsNavItem = ({
+  label,
+  icon: Icon,
+  active,
+  onClick,
+}: AdminSettingsNavItemProps) => {
+  return (
+    <button
+      type="button"
+      className={cn(
+        'flex h-9 items-center gap-3 rounded-md px-3 text-sm text-sidebar-foreground transition-colors',
+        active
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+          : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+      )}
+      onClick={onClick}
+    >
+      <Icon className="size-4" />
+      <span className="truncate">{label}</span>
+    </button>
   );
 };
