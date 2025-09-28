@@ -68,3 +68,11 @@
 2025-09-28 16:48 CEST - Added audit metadata key schema to resolve TS2554 in admin audit logs route.
 2025-09-28 16:58 CEST - Normalized audit metadata mapping to satisfy TS2345 in admin audit logs route.
 2025-09-28 17:00 CEST - Guarded next cursor selection to eliminate TS2532 in admin audit logs route.
+2025-09-28 18:49 CEST - Added @colanode/client queries wildcard export to unblock admin audit log imports.
+2025-09-28 18:51 CEST - Added workspace API tokens query key constant and output alias.
+2025-09-28 18:53 CEST - Pointed admin audit log table to import types via @colanode/client/queries index.
+2025-09-28 18:55 CEST - Updated admin sidebar audit log type import to use @colanode/client/queries index barrel.
+2025-09-28 18:56 CEST - Switched workspace API tokens tab to barrel import and shared query key.
+2025-09-28 18:59 CEST - Repointed UI imports to scoped @colanode/client query modules for reliable type discovery.
+2025-09-28 19:02 CEST - Rebuilt @colanode/client package to emit declarations for new query modules.
+2025-09-28 19:03 CEST - Verified @colanode/ui TypeScript build completes without TS2307 errors.

@@ -7,6 +7,27 @@
 - 🚫 API token creation not testable (option missing)
 - ⚠️ Redis stop → /health fails hard (consider removal from endpoint)
 
+# Session Debrief – 2025-09-28 19:03 CEST
+
+## Key Deliverables
+- Added wildcard query export in `@colanode/client` so admin audit and workspace token modules resolve cleanly.
+- Extended workspace API token query definitions with shared constants and rebuilt client declarations.
+- Updated UI admin and workspace components to reference the new query modules; verified `@colanode/ui` TypeScript build.
+
+## Outstanding Work
+- Review container tab mappings (`container-tab-trigger.tsx`, `sidebar-settings.tsx`) for Workspace API tokens tab wiring noted in earlier TODO list.
+
+## Next Session Resume
+- Ensure workspace API token handlers/mutations are exported and consumed by UI flows.
+- Expand audit log UI to surface pagination + filtering results now that query types exist.
+
+## Error Log
+- `npx tsc --project packages/ui/tsconfig.json --noEmit` initially reported TS6305/TS2345 until `@colanode/client` declarations were rebuilt.
+- `npx tsc --build packages/client/tsconfig.json` first attempt failed because `--build` flag not placed first.
+
+## Notes
+- Barrel imports for client queries fell back to scoped paths due to declaration availability; continue using path-qualified modules for now.
+
 # Session Debrief – 2025-09-28 17:00 CEST
 
 ## Key Deliverables

@@ -11,6 +11,7 @@
     "./databases": "./src/databases/index.ts",
     "./services": "./src/services/index.ts",
     "./queries": "./src/queries/index.ts",
+    "./queries/*": "./src/queries/*.ts",
     "./mutations": "./src/mutations/index.ts",
     "./commands": "./src/commands/index.ts"
   },

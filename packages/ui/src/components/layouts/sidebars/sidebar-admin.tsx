@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -6,6 +6,7 @@ import {
   AdminWorkspaceSummary,
 } from '@colanode/client/types/admin';
 import { AccountStatus, ServerRole, WorkspaceStatus } from '@colanode/core';
+import { AdminAuditLogEntry } from '@colanode/client/queries/admin/audit-logs-list';
 import { Button } from '@colanode/ui/components/ui/button';
 import { Input } from '@colanode/ui/components/ui/input';
 import { Spinner } from '@colanode/ui/components/ui/spinner';
@@ -13,6 +14,7 @@ import { useAccount } from '@colanode/ui/contexts/account';
 import { useMutation } from '@colanode/ui/hooks/use-mutation';
 import { useQuery } from '@colanode/ui/hooks/use-query';
 import { cn } from '@colanode/ui/lib/utils';
+import { AdminAuditLogTable } from '@colanode/ui/components/layouts/sidebars/admin/admin-audit-log-table';
 
 const accountStatusLabels: Record<AccountStatus, string> = {
   [AccountStatus.Pending]: 'Pending',
@@ -25,13 +27,17 @@ const workspaceStatusLabels: Record<WorkspaceStatus, string> = {
   [WorkspaceStatus.Inactive]: 'Inactive',
 };
 
-type AdminTab = 'accounts' | 'workspaces';
+type AdminTab = 'accounts' | 'workspaces' | 'auditLogs';
 
 export const SidebarAdmin = () => {
   const account = useAccount();
   const [activeTab, setActiveTab] = useState<AdminTab>('accounts');
   const [accountFilter, setAccountFilter] = useState('');
   const [workspaceFilter, setWorkspaceFilter] = useState('');
+  const [auditWorkspaceFilter, setAuditWorkspaceFilter] = useState('');
+  const [auditUserFilter, setAuditUserFilter] = useState('');
+  const [auditCursor, setAuditCursor] = useState<string | null>(null);
+  const [auditEntries, setAuditEntries] = useState<AdminAuditLogEntry[]>([]);
 
   const accountsQuery = useQuery(
     {
@@ -52,6 +58,24 @@ export const SidebarAdmin = () => {
       enabled: account.serverRole === 'administrator',
     }
   );
+
+  const auditLogsQueryInput = useMemo(
+    () => ({
+      type: 'admin.audit-logs.list' as const,
+      accountId: account.id,
+      limit: 50,
+      cursor: auditCursor,
+      workspaceId: auditWorkspaceFilter.trim()
+        ? auditWorkspaceFilter.trim()
+        : undefined,
+      userId: auditUserFilter.trim() ? auditUserFilter.trim() : undefined,
+    }),
+    [account.id, auditCursor, auditWorkspaceFilter, auditUserFilter]
+  );
+
+  const auditLogsQuery = useQuery(auditLogsQueryInput, {
+    enabled: account.serverRole === 'administrator' && activeTab === 'auditLogs',
+  });
 
   const { mutate: updateServerRole, isPending: isUpdatingServerRole } =
     useMutation();
@@ -91,6 +115,35 @@ export const SidebarAdmin = () => {
         .some((value) => value?.toLowerCase().includes(query))
     );
   }, [workspaceFilter, workspacesQuery.data]);
+
+  useEffect(() => {
+    if (!auditLogsQuery.data) {
+      if (!auditCursor) {
+        setAuditEntries([]);
+      }
+      return;
+    }
+
+    setAuditEntries((prev) => {
+      if (auditCursor) {
+        const existing = new Set(prev.map((entry) => entry.id));
+        const next = [...prev];
+        for (const entry of auditLogsQuery.data.entries) {
+          if (!existing.has(entry.id)) {
+            next.push(entry);
+          }
+        }
+        return next;
+      }
+
+      return auditLogsQuery.data.entries;
+    });
+  }, [auditLogsQuery.data, auditCursor]);
+
+  const resetAuditFilters = () => {
+    setAuditCursor(null);
+    setAuditEntries([]);
+  };
 
   const handleServerRoleChange = (
     targetAccountId: string,
@@ -206,6 +259,15 @@ export const SidebarAdmin = () => {
           >
             Workspaces
           </Button>
+          <Button
+            variant={activeTab === 'auditLogs' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => {
+              setActiveTab('auditLogs');
+            }}
+          >
+            Audit logs
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           {activeTab === 'accounts' ? (
@@ -283,6 +345,59 @@ export const SidebarAdmin = () => {
                 onPurge={handleWorkspacePurge}
               />
             )}
+          </div>
+        )}
+
+        {activeTab === 'auditLogs' && (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <h2 className="text-lg font-semibold">Audit logs</h2>
+              <div className="flex flex-wrap items-center gap-3">
+                <Input
+                  placeholder="Filter by workspace id"
+                  value={auditWorkspaceFilter}
+                  onChange={(event) => {
+                    setAuditWorkspaceFilter(event.target.value);
+                    setAuditCursor(null);
+                    setAuditEntries([]);
+                  }}
+                  className="w-48"
+                />
+                <Input
+                  placeholder="Filter by user id"
+                  value={auditUserFilter}
+                  onChange={(event) => {
+                    setAuditUserFilter(event.target.value);
+                    setAuditCursor(null);
+                    setAuditEntries([]);
+                  }}
+                  className="w-48"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setAuditWorkspaceFilter('');
+                    setAuditUserFilter('');
+                    resetAuditFilters();
+                  }}
+                >
+                  Reset filters
+                </Button>
+              </div>
+            </div>
+
+            <AdminAuditLogTable
+              entries={auditEntries}
+              isLoading={auditLogsQuery.isLoading || auditLogsQuery.isFetching}
+              hasMore={Boolean(auditLogsQuery.data?.nextCursor)}
+              onLoadMore={() => {
+                if (!auditLogsQuery.data?.nextCursor) {
+                  return;
+                }
+                setAuditCursor(auditLogsQuery.data.nextCursor);
+              }}
+            />
           </div>
         )}
       </div>
