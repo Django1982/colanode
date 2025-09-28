@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type SVGProps } from 'react';
+import { useEffect, useMemo, useState, type JSX, type SVGProps } from 'react';
 import { Building2, ClipboardList, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -37,7 +37,7 @@ interface AdminSection {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 }
 
-const ADMIN_SECTIONS: AdminSection[] = [
+const ADMIN_SECTIONS: readonly [AdminSection, ...AdminSection[]] = [
   {
     key: 'accounts',
     label: 'Accounts',

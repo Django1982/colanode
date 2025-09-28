@@ -77,3 +77,4 @@
 2025-09-28 19:02 CEST - Rebuilt @colanode/client package to emit declarations for new query modules.
 2025-09-28 19:03 CEST - Verified @colanode/ui TypeScript build completes without TS2307 errors.
 2025-09-28 19:57 CEST - Restructured admin navigation into sidebar sections for Accounts, Workspaces, Audit Logs to align with human test feedback.
+2025-09-28 20:38 CEST - Repaired sidebar-admin TypeScript errors (React JSX import + active section fallback).

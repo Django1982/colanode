@@ -1,3 +1,15 @@
+# Session Debrief – 2025-09-28 20:38 CEST
+
+## Summary
+- Imported React JSX types and enforced non-empty admin section tuple to clear sidebar-admin TypeScript diagnostics.
+
+## Priority 1
+- Admin settings sidebar restructure pending UX verification and human test rerun.
+
+## Errors
+- compile.log missing in workspace; noted while attempting to review build output.
+
+
 # Session Debrief – 2025-09-28 19:57 CEST
 
 ## Summary
