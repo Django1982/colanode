@@ -45,3 +45,15 @@
 
 ## Errors
 - Initial attempts to read DEBRIEF.md and HUMAN_TESTS.md failed because the files were absent in the workspace.
+
+# Session Debrief – 2025-09-29 10:34 CEST
+
+## Summary
+- Investigated 404s against documented API endpoints; server mounts client routes beneath /client/v1 (and optional config.server.pathPrefix) while docs/tests target root paths.
+
+## Priority 1
+- Align documentation and scripted checks with actual /client/v1 base path or adjust Fastify registration to expose endpoints at documented locations.
+
+## Errors
+- None.
+

@@ -134,3 +134,17 @@
 2025-09-29 09:54 CEST - Reviewed FIXES.md and compile.log; compile.log still missing from workspace.
 2025-09-29 09:55 CEST - Added @radix-ui/react-switch dependency to packages/ui/package.json to satisfy TS2307.
 2025-09-29 09:56 CEST - Tuned switch.tsx focus ring classes after confirming Radix import path.
+
+2025-09-29 10:25 CEST - Reviewed AGENTS.md and STATUS.md ahead of API exposure investigation.
+
+2025-09-29 10:27 CEST - Reviewed DEBRIEF.md and FIXES.md; noted current admin/API context before route diagnosis.
+
+2025-09-29 10:28 CEST - Reviewed docs/API_ENDPOINTS.md and scripts/api_tests.sh to align documented endpoints with scripted checks.
+
+2025-09-29 10:30 CEST - Inspected apps/server/src/api/index.ts to trace registered prefixes for home, config, client, and rest routes.
+
+2025-09-29 10:32 CEST - Reviewed client route registrations (index/accounts/workspaces) to compare documented paths vs mounted prefixes.
+
+2025-09-29 10:34 CEST - Logged API prefix mismatch in DEBRIEF.md and FIXES.md; documentation/tests currently omit /client/v1.
+
+2025-09-29 10:36 CEST - Captured line numbers via nl for api/index.ts, client route index, and docs/API_ENDPOINTS.md to support final report.
