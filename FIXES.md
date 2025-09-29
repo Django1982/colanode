@@ -46,3 +46,9 @@
   status: done
   short: "Redis failure handling in /health"
   details: "Optional redis health flag avoids 503 when cache offline."
+
+- priority: 2
+  source: ai
+  status: open
+  short: "compile.log artifact absent in workspace"
+  details: "Attempting to read compile.log fails; confirm build logs location or regenerate."

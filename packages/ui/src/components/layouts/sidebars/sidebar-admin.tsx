@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type JSX, type SVGProps } from 'react';
-import { Building2, ClipboardList, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Building2, ClipboardList, Users, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -34,7 +34,7 @@ type AdminTab = 'accounts' | 'workspaces' | 'auditLogs';
 interface AdminSection {
   key: AdminTab;
   label: string;
-  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  icon: LucideIcon;
 }
 
 const ADMIN_SECTIONS: readonly [AdminSection, ...AdminSection[]] = [
@@ -647,7 +647,7 @@ const WorkspacesTable = ({
 
 interface AdminSettingsNavItemProps {
   label: string;
-  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  icon: LucideIcon;
   active: boolean;
   onClick: () => void;
 }

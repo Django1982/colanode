@@ -78,3 +78,6 @@
 2025-09-28 19:03 CEST - Verified @colanode/ui TypeScript build completes without TS2307 errors.
 2025-09-28 19:57 CEST - Restructured admin navigation into sidebar sections for Accounts, Workspaces, Audit Logs to align with human test feedback.
 2025-09-28 20:38 CEST - Repaired sidebar-admin TypeScript errors (React JSX import + active section fallback).
+2025-09-28 21:04 CEST - rg still unavailable; fell back to grep for AdminSettingsNavItem lookup.
+2025-09-28 21:05 CEST - compile.log missing in workspace; documenting in DEBRIEF.md.
+2025-09-28 21:06 CEST - Updated sidebar-admin icon typings to accept LucideIcon and resolve TS2322.
