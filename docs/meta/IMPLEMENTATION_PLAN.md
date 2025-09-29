@@ -9,7 +9,7 @@
 ## Phase 2 – Account & Workspace Management
 Status: In progress (core API + UI shipped; follow-up automation/tests outstanding)
 - ✅ Introduced a global `Server Administrator` role with first-user auto-promotion, admin-only elevation flows, and request-time enforcement in `adminAuthenticator`.
-- ✅ Added self-service password rotation with strength validation, audit logging, and confirmation email via `/v1/accounts/password` + `AccountPasswordRotate`.
+- ✅ Added self-service password rotation with strength validation, audit logging, and confirmation email via `/client/v1/accounts/password` + `AccountPasswordRotate`.
 - ✅ Implemented workspace removal as a soft delete, with user revocation, scheduled `workspace.clean` purges, and admin restore/purge controls.
 - ✅ Built an administrator console in the web app that surfaces account/workspace management, role edits, status toggles, and password-reset triggers for administrators only.
 - 🔄 Hardened identity management: admin actions now emit audit logs, nightly cleanup honors `LOGGING_AUDIT_RETENTION_DAYS`, `/health` exposes readiness, and existing device rate limits guard the surface; still need automated coverage once Node ≥20 tooling is available.

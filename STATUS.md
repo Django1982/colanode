@@ -148,3 +148,29 @@
 2025-09-29 10:34 CEST - Logged API prefix mismatch in DEBRIEF.md and FIXES.md; documentation/tests currently omit /client/v1.
 
 2025-09-29 10:36 CEST - Captured line numbers via nl for api/index.ts, client route index, and docs/API_ENDPOINTS.md to support final report.
+
+2025-09-29 10:39 CEST - Staged DEBRIEF.md/FIXES.md/STATUS.md and committed as "docs: log API prefix mismatch investigation" while leaving pre-existing changes untouched.
+
+2025-09-29 10:41 CEST - Verified line numbers for STATUS.md, DEBRIEF.md, and FIXES.md updates to reference in final report.
+
+2025-09-29 11:05 CEST - Reloaded AGENTS.md and STATUS.md ahead of /client/v1 documentation alignment.
+
+2025-09-29 11:06 CEST - Reviewed DEBRIEF.md and FIXES.md to reconfirm pending /client/v1 documentation follow-up.
+
+2025-09-29 11:08 CEST - Reviewed docs/API_ENDPOINTS.md and scripts/api_tests.sh to plan /client/v1 path updates.
+
+2025-09-29 11:10 CEST - Updated docs/API_ENDPOINTS.md to show all client endpoints under /client/v1 namespace.
+
+2025-09-29 11:12 CEST - Updated scripts/api_tests.sh so automated checks hit /client/v1-prefixed endpoints.
+
+2025-09-29 11:13 CEST - Added DEBRIEF.md note documenting /client/v1 namespace and re-confirmed apps/server/src/api/index.ts uses config.server.pathPrefix + /client/v1.
+
+2025-09-29 11:16 CEST - Closed FIXES.md /client/v1 documentation issue after syncing docs and api_tests.sh.
+
+2025-09-29 11:18 CEST - Committed "docs: align client API references with /client/v1" including docs/API_ENDPOINTS.md and scripts/api_tests.sh updates.
+
+2025-09-29 11:30 CEST - Scanned documentation for legacy root API paths; residual references remain in docs/API_ENDPOINTS_org.md and meta docs.
+
+2025-09-29 11:32 CEST - Updated docs/API_ENDPOINTS_org.md and docs/meta/IMPLEMENTATION_PLAN.md to reference /client/v1 namespace.
+
+2025-09-29 11:33 CEST - Logged documentation refresh in DEBRIEF.md for /client/v1 namespace alignment.

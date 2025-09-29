@@ -57,3 +57,27 @@
 ## Errors
 - None.
 
+
+# Session Debrief – 2025-09-29 11:12 CEST
+
+## Summary
+- Documented /client/v1 namespace across API reference and tests; confirmed apps/server/src/api/index.ts mounts clientRoutes at `${prefix}/client/v1` where `prefix` = config.server.pathPrefix when set.
+
+## Priority 1
+- None.
+
+## Errors
+- None.
+
+
+# Session Debrief – 2025-09-29 11:32 CEST
+
+## Summary
+- Synced legacy documentation references (docs/API_ENDPOINTS_org.md, docs/meta/IMPLEMENTATION_PLAN.md) with the /client/v1 namespace and ensured alignment with Fastify path prefixes.
+
+## Priority 1
+- None.
+
+## Errors
+- None.
+
