@@ -130,3 +130,7 @@
 2025-09-29 09:40 CEST - Checked FIXES.md and attempted compile.log read; file missing in workspace.
 2025-09-29 09:41 CEST - Confirmed @colanode/ui lacked a Switch; added Radix-based switch component under components/ui.
 2025-09-29 09:42 CEST - Verified admin sidebar and workspace API token imports target new component without code changes.
+2025-09-29 09:53 CEST - Reloaded AGENTS.md and STATUS.md under renewed TS2307 instructions.
+2025-09-29 09:54 CEST - Reviewed FIXES.md and compile.log; compile.log still missing from workspace.
+2025-09-29 09:55 CEST - Added @radix-ui/react-switch dependency to packages/ui/package.json to satisfy TS2307.
+2025-09-29 09:56 CEST - Tuned switch.tsx focus ring classes after confirming Radix import path.
