@@ -38,3 +38,10 @@
     Decide whether to expose routes at documented paths or update documentation/tests to match actual Fastify registration.
     Resolved 2025-09-29 by updating docs/API_ENDPOINTS.md and scripts/api_tests.sh to /client/v1.
 
+- priority: 2
+  source: ai
+  status: open
+  short: "Device token needed for /client/v1 verification"
+  details: |
+    Curling https://cn-server-dev.djangos-net.de/client/v1/workspaces/01k67redw0saydh5gb69fk3swewc with the provided API token (prefix cna_) returns 401 token_invalid.
+    `/client/v1` expects device tokens (prefix cnd_) so live verification remains blocked without a valid device token.

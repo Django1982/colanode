@@ -81,3 +81,12 @@
 ## Errors
 - None.
 
+
+# Session Debrief – 2025-09-29 19:59 CEST
+
+## Summary
+- Ran live curl checks against cn-server-dev; /client/v1/workspaces/... rejects API token with 401 while /rest/v1/workspaces responds 200 with the same token, confirming namespace split and auth expectations.
+
+## Errors
+- Provided API token (prefix cna_) is not valid for /client/v1 account routes; device tokens (prefix cnd_) remain required.
+

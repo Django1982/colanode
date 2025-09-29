@@ -174,3 +174,9 @@
 2025-09-29 11:32 CEST - Updated docs/API_ENDPOINTS_org.md and docs/meta/IMPLEMENTATION_PLAN.md to reference /client/v1 namespace.
 
 2025-09-29 11:33 CEST - Logged documentation refresh in DEBRIEF.md for /client/v1 namespace alignment.
+
+2025-09-29 19:47 CEST - Reviewed server/client route registration to confirm /client/v1 mounts.
+
+2025-09-29 19:55 CEST - Refreshed scripts/api_tests.sh for /client/v1 tests with env-configured tokens.
+
+2025-09-29 19:59 CEST - Curl-tested /client/v1 workspace read (401 with API token) and /rest/v1 workspace listing (200).
