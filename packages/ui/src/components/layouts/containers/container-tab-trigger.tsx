@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { ShieldCheck, X } from 'lucide-react';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { match } from 'ts-pattern';
@@ -19,6 +19,7 @@ import { RecordContainerTab } from '@colanode/ui/components/records/record-conta
 import { SpaceContainerTab } from '@colanode/ui/components/spaces/space-container-tab';
 import { TabsTrigger } from '@colanode/ui/components/ui/tabs';
 import { WorkspaceDownloadsTab } from '@colanode/ui/components/workspaces/downloads/workspace-downloads-tab';
+import { WorkspaceApiTokensTab } from '@colanode/ui/components/workspaces/api-tokens/workspace-api-tokens-tab';
 import { WorkspaceStorageTab } from '@colanode/ui/components/workspaces/storage/workspace-storage-tab';
 import { WorkspaceUploadsTab } from '@colanode/ui/components/workspaces/uploads/workspace-uploads-tab';
 import { WorkspaceSettingsTab } from '@colanode/ui/components/workspaces/workspace-settings-tab';
@@ -39,6 +40,10 @@ const getContainerTabTriggerContent = (tab: ContainerTab) => {
 
   if (tab.path === SpecialContainerTabPath.WorkspaceUsers) {
     return <WorkspaceUsersTab />;
+  }
+
+  if (tab.path === SpecialContainerTabPath.WorkspaceApiTokens) {
+    return <WorkspaceApiTokensTab />;
   }
 
   if (tab.path === SpecialContainerTabPath.AccountSettings) {
@@ -63,6 +68,15 @@ const getContainerTabTriggerContent = (tab: ContainerTab) => {
 
   if (tab.path === SpecialContainerTabPath.AppAppearance) {
     return <AppAppearanceSettingsTab />;
+  }
+
+  if (tab.path === SpecialContainerTabPath.AdminSettings) {
+    return (
+      <div className="flex items-center space-x-2">
+        <ShieldCheck className="size-4" />
+        <span>Admin Settings</span>
+      </div>
+    );
   }
 
   return match(getIdType(tab.path))

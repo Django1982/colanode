@@ -55,9 +55,13 @@ const ADMIN_SECTIONS: readonly [AdminSection, ...AdminSection[]] = [
   },
 ];
 
-export const SidebarAdmin = () => {
+interface AdminSettingsProps {
+  initialTab?: AdminTab;
+}
+
+export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) => {
   const account = useAccount();
-  const [activeTab, setActiveTab] = useState<AdminTab>('accounts');
+  const [activeTab, setActiveTab] = useState<AdminTab>(initialTab);
   const [accountFilter, setAccountFilter] = useState('');
   const [workspaceFilter, setWorkspaceFilter] = useState('');
   const [auditWorkspaceFilter, setAuditWorkspaceFilter] = useState('');
@@ -113,6 +117,10 @@ export const SidebarAdmin = () => {
     useMutation();
   const { mutate: purgeWorkspace, isPending: isPurgingWorkspace } =
     useMutation();
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   const filteredAccounts = useMemo(() => {
     const list = accountsQuery.data ?? [];
@@ -267,10 +275,6 @@ export const SidebarAdmin = () => {
   const isLoadingWorkspaces =
     workspacesQuery.isLoading || workspacesQuery.isFetching;
 
-  const activeSection =
-    ADMIN_SECTIONS.find((section) => section.key === activeTab) ??
-    ADMIN_SECTIONS[0];
-
   return (
     <div className="flex h-full overflow-hidden">
       <div className="flex w-60 min-w-[15rem] flex-col border-r border-sidebar-border bg-sidebar/80">
@@ -291,7 +295,14 @@ export const SidebarAdmin = () => {
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
-          <h2 className="text-lg font-semibold">{activeSection.label}</h2>
+          <h2 className="text-lg font-semibold">
+            {
+              (
+                ADMIN_SECTIONS.find((section) => section.key === activeTab) ??
+                ADMIN_SECTIONS[0]
+              ).label
+            }
+          </h2>
           <div className="flex items-center gap-2">
             {activeTab === 'accounts' && (
               <Button

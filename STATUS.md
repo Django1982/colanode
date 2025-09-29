@@ -81,3 +81,7 @@
 2025-09-28 21:04 CEST - rg still unavailable; fell back to grep for AdminSettingsNavItem lookup.
 2025-09-28 21:05 CEST - compile.log missing in workspace; documenting in DEBRIEF.md.
 2025-09-28 21:06 CEST - Updated sidebar-admin icon typings to accept LucideIcon and resolve TS2322.
+2025-09-28 21:20 CEST - Added admin/settings special tab and tab trigger label for drawer integration.
+2025-09-28 21:22 CEST - Refactored admin settings component for drawer usage with retained subsections.
+2025-09-28 21:24 CEST - Removed admin sidebar mode; admin icon now opens settings drawer preview.
+2025-09-28 21:25 CEST - Exposed Admin settings entry in settings sidebar for administrators.

@@ -23,6 +23,18 @@
 - rg command unavailable; used grep fallback.
 
 
+# Session Debrief – 2025-09-28 21:25 CEST
+
+## Summary
+- Routed Admin settings through left drawer via new admin/settings tab while keeping Accounts, Workspaces, Audit Logs subsections.
+
+## Priority 1
+- Admin settings drawer flow pending human UX verification to confirm parity with prior standalone view.
+
+## Errors
+- None.
+
+
 # Session Debrief – 2025-09-28 19:57 CEST
 
 ## Summary

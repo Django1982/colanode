@@ -1,9 +1,11 @@
 import {
   Cylinder,
   Download,
+  Key,
   LogOut,
   Palette,
   Settings,
+  ShieldCheck,
   Upload,
   Users,
 } from 'lucide-react';
@@ -12,12 +14,14 @@ import { SpecialContainerTabPath } from '@colanode/client/types';
 import { SidebarHeader } from '@colanode/ui/components/layouts/sidebars/sidebar-header';
 import { SidebarSettingsItem } from '@colanode/ui/components/layouts/sidebars/sidebar-settings-item';
 import { Separator } from '@colanode/ui/components/ui/separator';
+import { useAccount } from '@colanode/ui/contexts/account';
 import { useApp } from '@colanode/ui/contexts/app';
 import { useWorkspace } from '@colanode/ui/contexts/workspace';
 import { useLiveQuery } from '@colanode/ui/hooks/use-live-query';
 
 export const SidebarSettings = () => {
   const app = useApp();
+  const account = useAccount();
   const workspace = useWorkspace();
 
   const pendingUploadsQuery = useLiveQuery({
@@ -44,6 +48,11 @@ export const SidebarSettings = () => {
           title="Users"
           icon={Users}
           path={SpecialContainerTabPath.WorkspaceUsers}
+        />
+        <SidebarSettingsItem
+          title="API Tokens"
+          icon={Key}
+          path={SpecialContainerTabPath.WorkspaceApiTokens}
         />
         <SidebarSettingsItem
           title="Storage"
@@ -77,6 +86,16 @@ export const SidebarSettings = () => {
           path={SpecialContainerTabPath.AccountSettings}
         />
       </div>
+      {account.serverRole === 'administrator' && (
+        <div className="flex w-full min-w-0 flex-col gap-1">
+          <SidebarHeader title="Admin settings" />
+          <SidebarSettingsItem
+            title="Admin"
+            icon={ShieldCheck}
+            path={SpecialContainerTabPath.AdminSettings}
+          />
+        </div>
+      )}
       <div className="flex w-full min-w-0 flex-col gap-1">
         <SidebarHeader title="App settings" />
         <SidebarSettingsItem

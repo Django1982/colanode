@@ -1,11 +1,12 @@
 import { LayoutGrid, MessageCircle, Settings, ShieldCheck } from 'lucide-react';
 
-import { SidebarMenuType } from '@colanode/client/types';
+import { SidebarMenuType, SpecialContainerTabPath } from '@colanode/client/types';
 import { SidebarMenuFooter } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-footer';
 import { SidebarMenuHeader } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-header';
 import { SidebarMenuIcon } from '@colanode/ui/components/layouts/sidebars/sidebar-menu-icon';
 import { useAccount } from '@colanode/ui/contexts/account';
 import { useApp } from '@colanode/ui/contexts/app';
+import { useLayout } from '@colanode/ui/contexts/layout';
 import { useRadar } from '@colanode/ui/contexts/radar';
 import { useWorkspace } from '@colanode/ui/contexts/workspace';
 import { useLiveQuery } from '@colanode/ui/hooks/use-live-query';
@@ -20,6 +21,7 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
   const account = useAccount();
   const workspace = useWorkspace();
   const radar = useRadar();
+  const layout = useLayout();
 
   const platform = app.getMetadata('platform');
   const windowSize = app.getMetadata('window.size');
@@ -41,6 +43,9 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
 
   const pendingUploads = pendingUploadsQuery.data ?? [];
   const pendingUploadsCount = pendingUploads.length;
+
+  const isAdminTabActive =
+    layout.activeTab === SpecialContainerTabPath.AdminSettings;
 
   return (
     <div className="flex flex-col h-full w-[65px] min-w-[65px] items-center">
@@ -83,9 +88,10 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
           <SidebarMenuIcon
             icon={ShieldCheck}
             onClick={() => {
-              onChange('admin');
+              onChange('settings');
+              layout.previewLeft(SpecialContainerTabPath.AdminSettings);
             }}
-            isActive={value === 'admin'}
+            isActive={value === 'settings' && isAdminTabActive}
           />
         )}
         <div className="mt-auto" />
@@ -95,7 +101,7 @@ export const SidebarMenu = ({ value, onChange }: SidebarMenuProps) => {
             onChange('settings');
           }}
           className="mt-auto"
-          isActive={value === 'settings'}
+          isActive={value === 'settings' && !isAdminTabActive}
           unreadBadge={{
             count: pendingUploadsCount,
             unread: pendingUploadsCount > 0,
