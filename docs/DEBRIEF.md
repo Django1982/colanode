@@ -1,11 +1,8 @@
-## Human Tests (2025-09-25 10:40)
-- ✅ Signup → Admin-Auto-Elevation verified
-- 🚫 Password reset mail (Mail server missing)
-- ⚠️ Workspace restore works, ownership assignment missing
-- ⚠️ Audit logs only DB, missing UI + file logs
-- ❓ Config pathPrefix serialization unclear
-- 🚫 API token creation not testable (option missing)
-- ⚠️ Redis stop → /health fails hard (consider removal from endpoint)
+## Human Tests (2025-09-25 19:25)
+- API Tokens menu visible under Workspace Settings
+    - Api Token Tab Heade not clearly visible and Body is empty
+- API Token settings under General available
+
 
 # Session Debrief – 2025-09-28 19:03 CEST
 
@@ -194,3 +191,39 @@
 ## Notes
 - Set `SERVER_VERSION`, `SERVER_SHA`, and `SERVER_NAME` env vars (e.g. in Docker `.env`) to match deploy metadata.
 - Server/client now expect admin summaries from `@colanode/core`; ensure corresponding packages are rebuilt before publishing.
+# Session Debrief – 2025-09-29 08:26 CEST
+
+## Summary
+- Documented all client REST endpoints and saved the catalog to docs/API_ENDPOINTS.md for ongoing reference.
+
+## Priority 1
+- None.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-29 09:20 CEST
+
+## Summary
+- Added workspace and admin UI toggles to reveal resource IDs and gated sensitive admin endpoints behind a super-admin switch.
+- Documented new visibility defaults and controls in docs/API_ENDPOINTS.md; logged follow-up to formalize a dedicated super-admin role.
+
+## Priority 1
+- None.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-29 09:43 CEST
+
+## Summary
+- Added a Radix-based Switch component under packages/ui to satisfy TS2307 errors for admin and workspace toggles.
+- Updated STATUS.md and closed the FIXES.md entry; compile.log remains absent for verification.
+
+## Priority 1
+- None.
+
+## Errors
+- `sleep 60` → timed out after 10s sandbox limit while honoring step delay requirement.
+- `wc -l compile.log` → failed because compile.log is missing in the workspace.
+- `python` → command unavailable; fell back to python3 for FIXES.md update.

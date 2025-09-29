@@ -85,3 +85,48 @@
 2025-09-28 21:22 CEST - Refactored admin settings component for drawer usage with retained subsections.
 2025-09-28 21:24 CEST - Removed admin sidebar mode; admin icon now opens settings drawer preview.
 2025-09-28 21:25 CEST - Exposed Admin settings entry in settings sidebar for administrators.
+2025-09-28 21:32 CEST - Reintroduced 'admin' sidebar menu type for legacy metadata compatibility.
+2025-09-28 21:33 CEST - Normalized admin metadata to settings in use-layout-state to resolve TS2367.
+2025-09-28 21:45 CEST - Wired workspace API tokens content into container tabs and added drawer label component.
+2025-09-29 07:58 CEST - Cataloged account routes (index, password, sync) for API endpoint documentation.
+2025-09-29 08:00 CEST - Documented account routes (update, email login, email register) for API reference.
+2025-09-29 08:01 CEST - Captured account email verification and password reset routes for API summary.
+2025-09-29 08:03 CEST - Reviewed account google login and logout routes for endpoint catalog.
+2025-09-29 08:04 CEST - Parsed admin routes (index, accounts, workspaces) to map management endpoints.
+2025-09-29 08:05 CEST - Extracted admin audit log listing endpoint parameters for documentation.
+2025-09-29 08:07 CEST - Reviewed avatar upload/download routes to capture media endpoints.
+2025-09-29 08:08 CEST - Logged socket init/open routes for realtime connection documentation.
+2025-09-29 08:10 CEST - Mapped primary workspace routes (index, get, update) for workspace docs.
+2025-09-29 08:11 CEST - Recorded workspace create/delete/api-settings endpoints for doc prep.
+2025-09-29 08:12 CEST - Documented workspace API token management routes (list, create, rotate, revoke).
+2025-09-29 08:14 CEST - Collected workspace file routes (index, download, PUT upload) for storage section.
+2025-09-29 08:16 CEST - Captured TUS upload and storage summary routes for workspace storage coverage.
+2025-09-29 08:18 CEST - Summarized workspace user routes (create, role update) for collaboration section.
+2025-09-29 08:19 CEST - Logged user storage limits and workspace mutations sync endpoints for doc completeness.
+2025-09-29 08:21 CEST - Reviewed client route index to confirm domain prefixes for API catalog.
+2025-09-29 08:25 CEST - Authored docs/API_ENDPOINTS.md summarizing all client API endpoints by domain.
+2025-09-29 08:44 CEST - Reviewed AGENTS.md to refresh Codex operating constraints before UI/API updates.
+2025-09-29 08:45 CEST - Reviewed STATUS.md history to understand prior admin/API workstreams before new usability changes.
+2025-09-29 08:47 CEST - Reviewed docs/DEBRIEF.md to capture historical deliverables and outstanding admin/API items.
+2025-09-29 08:48 CEST - Reviewed FIXES.md to confirm no outstanding issues before defining new API visibility tasks.
+2025-09-29 08:49 CEST - Reviewed docs/API_ENDPOINTS.md to align upcoming UI/admin work with documented endpoints.
+2025-09-29 08:51 CEST - Reviewed workspace API tokens tab UI to plan resource ID visibility enhancements.
+2025-09-29 08:52 CEST - Attempted to inspect admin components directory; path missing, will locate admin UI elsewhere.
+2025-09-29 08:54 CEST - Located sidebar-admin components for endpoint visibility work using rg.
+2025-09-29 08:55 CEST - Reviewed sidebar-admin implementation to determine where to add sensitive endpoint visibility controls.
+2025-09-29 08:58 CEST - Reviewed admin audit log table to plan ID display and sensitivity integration.
+2025-09-29 09:00 CEST - Added token ID visibility toggle to workspace API tokens table.
+2025-09-29 09:02 CEST - Inspected sidebar-admin render sections to target injection points for toggles.
+2025-09-29 09:06 CEST - Extended admin section metadata to support sensitive endpoint toggling and resource ID controls.
+2025-09-29 09:07 CEST - Added state for sensitive endpoint visibility and resource ID toggle in admin settings.
+2025-09-29 09:09 CEST - Wired UI toggles for sensitive endpoint exposure and resource ID display in admin layout.
+2025-09-29 09:12 CEST - Propagated ID toggle through admin tables for accounts, workspaces, and audit logs.
+2025-09-29 09:13 CEST - Enabled log ID visibility within admin audit log table.
+2025-09-29 09:16 CEST - Guarded admin views so hidden tabs remain inaccessible when sensitive endpoints are concealed.
+2025-09-29 09:18 CEST - Documented sensitive admin endpoints and new visibility toggles in docs/API_ENDPOINTS.md.
+2025-09-29 09:19 CEST - Logged follow-up in FIXES.md to formalize super-admin role for sensitive endpoint toggles.
+2025-09-29 09:21 CEST - Appended new session summary to docs/DEBRIEF.md covering admin visibility improvements.
+2025-09-29 09:39 CEST - Resumed TS2307 investigation; reviewed AGENTS.md and STATUS.md constraints.
+2025-09-29 09:40 CEST - Checked FIXES.md and attempted compile.log read; file missing in workspace.
+2025-09-29 09:41 CEST - Confirmed @colanode/ui lacked a Switch; added Radix-based switch component under components/ui.
+2025-09-29 09:42 CEST - Verified admin sidebar and workspace API token imports target new component without code changes.

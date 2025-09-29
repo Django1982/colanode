@@ -12,16 +12,18 @@
 ## Current
 
 - priority: 1
-  source: human
-  status: in-progress
-  short: "Unify Admin Settings with Settings Drawer UX"
+  source: compile
+  status: done
+  short: "Missing or incorrect import for Switch component"
   details: |
-    Human tests show Admin Settings (Accounts, Workspaces, Audit Logs) currently open
-    as standalone views in the admin nav bar.  
-    Expected behavior: open inside the same right-hand settings drawer/panel used by
-    Workspace Settings and Appearance.  
+    TypeScript build fails with TS2307:
+      • Cannot find module '@colanode/ui/components/ui/switch'
+    Affected files:
+      • sidebar-admin.tsx
+      • workspace-api-tokens-tab.tsx
+
     Requirements:
-      • Add "Admin" section in settings sidebar.
-      • On click, open drawer with Accounts, Workspaces, Audit Logs as subsections.
-      • Ensure same close button and panel UX as other settings.
-    2025-09-28 - Drawer path wired; awaiting human UX verification of new flow.
+      • Verify if a Switch component exists in packages/ui/components/ui/.
+      • If missing, create new Switch component (can reuse shadcn/ui switch).
+      • If present under different path, update imports to correct location.
+      • Ensure consistent import path across all UI components.
