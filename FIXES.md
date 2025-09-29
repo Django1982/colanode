@@ -28,6 +28,18 @@
       • Update imports in switch.tsx to match Radix component structure.
 
 - priority: 1
+  source: compile
+  status: done
+  short: "device-token-issue.ts uses invalid status code types"
+  details: |
+    Resolved TypeScript TS2345 by narrowing statusForApiTokenError to return 401 | 403 | 404.
+    File:
+      • apps/server/src/api/client/routes/auth/device-token-issue.ts:60
+
+    Notes:
+      • No build rerun; change aligns Fastify reply.code call with declared response schema.
+
+- priority: 1
   source: ai
   status: done
   short: "Documented API paths omit /client/v1 prefix"

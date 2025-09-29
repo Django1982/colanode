@@ -180,3 +180,15 @@
 2025-09-29 19:55 CEST - Refreshed scripts/api_tests.sh for /client/v1 tests with env-configured tokens.
 
 2025-09-29 19:59 CEST - Curl-tested /client/v1 workspace read (401 with API token) and /rest/v1 workspace listing (200).
+
+2025-09-29 20:11 CEST - Verified new workspace API token via /rest/v1/workspaces (200 OK).
+
+2025-09-30 13:34 CEST - Added device-token scope support (schema/migration) plus middleware gating for read-only vs approval_full tokens.
+
+2025-09-30 13:36 CEST - Registered `/client/v1/auth/device-tokens` issuance route accepting device or workspace tokens and inserting scoped device records.
+
+2025-09-30 13:38 CEST - Extended docs/API_ENDPOINTS.md with device-token issuance workflow, scope matrix, and curl examples.
+
+2025-09-30 13:40 CEST - Remote POST https://cn-server-dev.djangos-net.de/client/v1/auth/device-tokens (cna token) returned 404; deployment pending on server.
+
+2025-09-30 13:41 CEST - Constrained statusForApiTokenError to 401/403/404 union so reply.code matches typed response status union.

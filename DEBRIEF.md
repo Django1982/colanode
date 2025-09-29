@@ -90,3 +90,28 @@
 ## Errors
 - Provided API token (prefix cna_) is not valid for /client/v1 account routes; device tokens (prefix cnd_) remain required.
 
+
+# Session Debrief – 2025-09-30 13:40 CEST
+
+## Summary
+- Added device-token scopes (read_only vs approval_full), database migration, and middleware enforcement across client routes.
+- Implemented `/client/v1/auth/device-tokens` to mint scoped device tokens using either device or workspace API credentials and updated documentation.
+
+## Priority 1
+- Deploy updated server build so `/client/v1/auth/device-tokens` becomes available for remote verification.
+
+## Errors
+- `sleep 60` without explicit timeout timed out at 10s; reran with extended timeout to satisfy step-delay rule.
+- POST https://cn-server-dev.djangos-net.de/client/v1/auth/device-tokens (cna token) returned 404; remote environment still on previous release.
+
+
+# Session Debrief – 2025-09-30 13:41 CEST
+
+## Summary
+- Narrowed `statusForApiTokenError` return type to the allowed status-code union so device token issuance compiles cleanly.
+
+## Priority 1
+- None.
+
+## Errors
+- `compile.log` missing when attempting to review build output; noted during resume checklist.
