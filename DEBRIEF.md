@@ -140,3 +140,62 @@
 
 ## Errors
 - Issuance endpoint returned {"code":"unknown","message":"An unexpected error occurred."} when called with cna_01k6a8sexdnp7t39jh0fa5r2ntat42ba7b9914d04467924896b8ccf72d38918df196ab134b26a4e88b39b4362c41.
+
+# Session Debrief – 2025-09-30 05:55 CEST
+
+## Summary
+- Local npm server build initially failed (DeviceTokenScope exports missing) before succeeding after rebuilding @colanode/core.
+
+## Priority 1
+- Launch @colanode/server on port 7777 and verify /client/v1/auth/device-tokens with cna_ sample.
+
+## Errors
+- `npm run build -w @colanode/server` returned TS2305/TS2724/TS2353 errors until @colanode/core rebuild refreshed device-token exports.
+
+# Session Debrief – 2025-09-30 05:58 CEST
+
+## Summary
+- Enabled SERVER_PORT override in config and rebuilt @colanode/server for port-7777 debugging.
+
+## Priority 1
+- Start server with SERVER_PORT=7777 and validate /client/v1/auth/device-tokens locally using cna_ credentials.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 06:01 CEST
+
+## Summary
+- Attempted SERVER_PORT=7777 launch; tsx dev run failed with EPERM on /tmp pipe, and dist startup aborted on missing STORAGE_/POSTGRES/REDIS configuration.
+
+## Priority 1
+- Provision required backing services/secrets (Postgres, Redis, S3 storage) so local server can bind on port 7777 for device-token tests.
+
+## Errors
+- `npm run dev -w @colanode/server` raised `EPERM` listening on `/tmp/user/1000/tsx-*/pipe` under sandboxed environment.
+- `node apps/server/dist/index.js` exited with storage/Postgres/Redis configuration validation errors.
+
+# Session Debrief – 2025-09-30 06:15 CEST
+
+## Summary
+- Configured Pino to mirror structured logs to `/var/log/colanode/server.log` while preserving stdout.
+- Added request/response hook logging method, path, status, and duration for all API calls.
+- Exposed `/client/v1/admin/logs/tail` and `/client/v1/admin/logs/errors` endpoints and documented usage.
+
+## Priority 1
+- Verify filesystem permissions allow writing/reading `/var/log/colanode/server.log` in deployment environments.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 06:21 CEST
+
+## Summary
+- Attempted to load compile.log for server TypeScript diagnostics but file is absent in the workspace.
+- Reworked Fastify logging hooks to use WeakMap timers, reply.elapsedTime fallback, and routeOptions/url path selection to satisfy TypeScript checks.
+
+## Priority 1
+- None.
+
+## Errors
+- compile.log missing while resuming TypeScript diagnostics review.

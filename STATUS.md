@@ -197,3 +197,14 @@
 
 2025-09-30 05:31 CEST - Attempted remote device-token issuance with provided cna_ sample; request returned token_invalid secret mismatch so workspace GET verification remains pending.
 2025-09-30 05:40 CEST - Attempted device token issuance with R/W workspace token; API returned {"code":"unknown","message":"An unexpected error occurred."}.
+2025-09-30 05:53 CEST - Reloaded AGENTS/STATUS/DEBRIEF/FIXES; planning local npm build and port-7777 server launch for device-token debug.
+2025-09-30 05:54 CEST - npm run build -w @colanode/server failed with missing DeviceTokenScope exports; queued @colanode/core rebuild.
+2025-09-30 05:55 CEST - Rebuilt @colanode/core and reran npm run build -w @colanode/server successfully; staging port-7777 startup.
+2025-09-30 05:58 CEST - Added SERVER_PORT config + rebuild so @colanode/server listens on configured port; preparing 7777 launch.
+2025-09-30 06:00 CEST - SERVER_PORT=7777 npm run dev -w @colanode/server failed: tsx watcher hit EPERM creating /tmp/user pipe under sandbox.
+2025-09-30 06:01 CEST - SERVER_PORT=7777 node apps/server/dist/index.js halted by config validation (missing STORAGE_* / POSTGRES / REDIS env values), so local device-token checks remain blocked.
+2025-09-30 06:09 CEST - Updated logging config to stream structured output to /var/log/colanode/server.log with stdout fallback.
+2025-09-30 06:12 CEST - Added Fastify response hook to log method/path/status/duration for every API call.
+2025-09-30 06:15 CEST - Registered `/client/v1/admin/logs/tail|errors` endpoints and documented log file path for admins.
+2025-09-30 06:18 CEST - Attempted to review compile.log for server TypeScript errors; file missing in workspace.
+2025-09-30 06:21 CEST - Reworked apps/server/src/app.ts logging hooks with WeakMap timers, reply.elapsedTime fallback, and routeOptions/url path selection to resolve TS diagnostics.
