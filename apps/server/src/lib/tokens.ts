@@ -1,6 +1,6 @@
 import { sha256 } from 'js-sha256';
 
-import { ServerRole } from '@colanode/core';
+import { DeviceTokenScope, DeviceTokenScopeValue, ServerRole } from '@colanode/core';
 import { database } from '@colanode/server/data/database';
 import { uuid } from '@colanode/server/lib/utils';
 import { RequestAccount } from '@colanode/server/types/api';
@@ -26,6 +26,28 @@ type VerifyTokenResult =
       authenticated: true;
       account: RequestAccount;
     };
+
+const DEFAULT_DEVICE_SCOPE: DeviceTokenScopeValue = DeviceTokenScope.ApprovalFull;
+const DEVICE_SCOPE_ORDER: readonly DeviceTokenScopeValue[] = [
+  DeviceTokenScope.ApprovalFull,
+  DeviceTokenScope.ReadOnly,
+];
+
+export const normalizeDeviceScopes = (
+  scopes?: DeviceTokenScopeValue[] | null
+): DeviceTokenScopeValue[] => {
+  if (!scopes || scopes.length === 0) {
+    return [DEFAULT_DEVICE_SCOPE];
+  }
+
+  if (scopes.includes(DeviceTokenScope.ApprovalFull)) {
+    return [DeviceTokenScope.ApprovalFull];
+  }
+
+  const uniqueScopes = new Set(scopes);
+
+  return DEVICE_SCOPE_ORDER.filter((scope) => uniqueScopes.has(scope));
+};
 
 export const generateToken = (deviceId: string): GenerateTokenResult => {
   const salt = uuid();
@@ -93,6 +115,7 @@ export const verifyToken = async (
       id: account.id,
       deviceId: device.id,
       serverRole: account.server_role as ServerRole,
+      scopes: normalizeDeviceScopes(device.scopes as DeviceTokenScopeValue[] | null),
     },
   };
 };

@@ -192,3 +192,7 @@
 2025-09-30 13:40 CEST - Remote POST https://cn-server-dev.djangos-net.de/client/v1/auth/device-tokens (cna token) returned 404; deployment pending on server.
 
 2025-09-30 13:41 CEST - Constrained statusForApiTokenError to 401/403/404 union so reply.code matches typed response status union.
+
+2025-09-30 05:30 CEST - Canonicalized device token scope ordering to keep persisted scopes deterministic and align middleware checks.
+
+2025-09-30 05:31 CEST - Attempted remote device-token issuance with provided cna_ sample; request returned token_invalid secret mismatch so workspace GET verification remains pending.

@@ -115,3 +115,17 @@
 
 ## Errors
 - `compile.log` missing when attempting to review build output; noted during resume checklist.
+
+
+# Session Debrief – 2025-09-30 05:31 CEST
+
+## Summary
+- Canonicalized device-token scope ordering so stored JSON matches middleware expectations and documented examples.
+- Documented end-to-end issuance + usage flow for `cnd_` tokens in `docs/API_ENDPOINTS.md`.
+- Attempted remote issuance and workspace fetch to validate the flow.
+
+## Priority 1
+- Secure valid workspace API token to complete live verification of `GET /client/v1/workspaces` with a freshly minted `cnd_` device token.
+
+## Errors
+- Remote POST `/client/v1/auth/device-tokens` with provided `cna_` sample returned `token_invalid` (secret mismatch), blocking verification request.

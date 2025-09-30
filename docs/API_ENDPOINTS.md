@@ -1,6 +1,7 @@
 # API Endpoints
 
 ## Inhaltsverzeichnis
+- [Auth](#auth)
 - [Accounts](#accounts)
 - [Avatars](#avatars)
 - [Sockets](#sockets)
@@ -22,6 +23,7 @@
 ## Authentifizierung
 
 - Gerätetokens (Präfix `cnd_`) authentifizieren `/client/v1`-Routen und stellen Account-Kontext bereit.
+- Gerätetokens tragen Scopes (`read_only` für reine Lese-/Sync-Zugriffe, `approval_full` für volle Schreibrechte) und können via `/client/v1/auth/device-tokens` mit einem vorhandenen Gerätetoken (`cnd_`) oder Workspace-API-Token (`cna_`, nur `read_only` ohne Write-Scope) erzeugt werden.
 - Workspace-API-Tokens (Präfix `cna_`) authentifizieren `/rest/v1`-Routen; der bereitgestellte Read-Only-Token erlaubt ausschließlich GET.
 - Header-Format: `Authorization: Bearer <token>`.
 - `/client/v1` antwortet mit `401 token_invalid`, wenn ein API-Token statt eines Gerätetokens gesendet wird.
@@ -29,12 +31,30 @@
 ## Beispielaufrufe
 
 ```bash
+# Gerätetoken ausstellen (Workspace-API-Token mit read_only → neues cnd_)
+DEVICE_TOKEN=$(curl -sS -X POST \\
+  -H "Authorization: Bearer cna_workspace_read_only_token" \\
+  -H "Content-Type: application/json" \\
+  -d '{"scopes":["read_only"],"type":"desktop","platform":"macOS"}' \\
+  https://cn-server-dev.djangos-net.de/client/v1/auth/device-tokens \\
+  | jq -r '.token')
+
 # Client-API (Gerätetoken)
-curl -H "Authorization: Bearer cnd_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" https://cn-server-dev.djangos-net.de/client/v1/workspaces/01k67redw0saydh5gb69fk3swewc
+curl -H "Authorization: Bearer ${DEVICE_TOKEN}" \\
+  https://cn-server-dev.djangos-net.de/client/v1/workspaces/01k67redw0saydh5gb69fk3swewc
 
 # Rest-API (Workspace-Token)
-curl -H "Authorization: Bearer cna_01k6a8s3wmacs89vkyfy7bzef4ate8db90d2c1fd43478247f5e66ddf9fe3eed633f7bd4d4c6db5c606940b321216" https://cn-server-dev.djangos-net.de/rest/v1/workspaces
+curl -H "Authorization: Bearer cna_workspace_read_only_token" \\
+  https://cn-server-dev.djangos-net.de/rest/v1/workspaces
 ```
+
+## Auth
+
+| Methode | Endpoint | Beschreibung |
+|---------|----------|--------------|
+| 🆕 POST | `/client/v1/auth/device-tokens` | Erstellt ein neues Gerätetoken. Authorization: vorhandenes Gerätetoken (`cnd_`, benötigt `approval_full`) oder Workspace-API-Token (`cna_`; `read_only`-Tokens dürfen nur `read_only`-Scopes anfordern, Write-Scope erlaubt auch `approval_full`). Body: optionale `scopes`, `type` (`web`/`desktop`), `platform`, `version`. Antwort liefert `deviceId`, `token`, `scopes`. |
+
+---
 
 ## Accounts
 
