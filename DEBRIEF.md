@@ -129,3 +129,14 @@
 
 ## Errors
 - Remote POST `/client/v1/auth/device-tokens` with provided `cna_` sample returned `token_invalid` (secret mismatch), blocking verification request.
+
+# Session Debrief – 2025-09-30 05:40 CEST
+
+## Summary
+- Tried issuing new device token with provided R/W workspace token; API responded with {"code":"unknown"}.
+
+## Priority 1
+- Investigate server-side failure preventing device token issuance via workspace token.
+
+## Errors
+- Issuance endpoint returned {"code":"unknown","message":"An unexpected error occurred."} when called with cna_01k6a8sexdnp7t39jh0fa5r2ntat42ba7b9914d04467924896b8ccf72d38918df196ab134b26a4e88b39b4362c41.

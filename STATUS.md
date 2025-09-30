@@ -196,3 +196,4 @@
 2025-09-30 05:30 CEST - Canonicalized device token scope ordering to keep persisted scopes deterministic and align middleware checks.
 
 2025-09-30 05:31 CEST - Attempted remote device-token issuance with provided cna_ sample; request returned token_invalid secret mismatch so workspace GET verification remains pending.
+2025-09-30 05:40 CEST - Attempted device token issuance with R/W workspace token; API returned {"code":"unknown","message":"An unexpected error occurred."}.
