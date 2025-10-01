@@ -67,9 +67,9 @@
 
 - priority: 1
   source: ai
-  status: open
+  status: in-progress
   short: "Login endpoint fails while logout succeeds"
   details: |
-    Observed: /client/v1/accounts/emails/logout works correctly, but /client/v1/accounts/emails/login returns error (401 or 500).
-    Findings: handler uses email/password schema (apps/server/src/api/client/routes/accounts/email-login.ts:24; packages/core/src/types/accounts.ts:53) and argon2 verification (apps/server/src/lib/accounts.ts:55). Route mounts under /client/v1/accounts/emails/login via accounts/index.ts:21, routes/index.ts:13, api/index.ts:15.
-    Suspect: buildLoginSuccessOutput device insert (apps/server/src/lib/accounts.ts:86) fails if devices.scopes migration absent or insert errors. Need DB verification and logs from failing environment.
+    Observed: /client/v1/accounts/emails/logout works correctly, but /client/v1/accounts/emails/login returned 500 when Redis unavailable.
+    Fix applied: rate limit helper now skips Redis errors and logs fallback (apps/server/src/lib/rate-limits.ts:16-38).
+    Pending: rerun hosting/tests/api_tests.sh to verify login with Redis offline or misconfigured.

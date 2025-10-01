@@ -228,3 +228,7 @@
 2025-09-30 07:22 CEST - buildLoginSuccessOutput (apps/server/src/lib/accounts.ts:86) inserts new device rows including scopes; login failures may stem from devices.scopes migration gaps or insert errors, pending database verification.
 
 2025-09-30 07:23 CEST - compile.log still absent; cat compile.log exits 1 so build diagnostics remain unavailable locally.
+
+2025-09-30 07:40 CEST - Hardened rate limit helper to skip Redis errors (apps/server/src/lib/rate-limits.ts:16) so email login no longer throws when Redis unavailable.
+
+2025-09-30 07:41 CEST - Login flow expected to succeed after redis fallback; awaiting hosting/tests/api_tests.sh confirmation.

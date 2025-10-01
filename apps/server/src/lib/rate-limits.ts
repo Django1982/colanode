@@ -1,6 +1,7 @@
 import { sha256 } from 'js-sha256';
 
 import { redis } from '@colanode/server/data/redis';
+import { createLogger } from '@colanode/server/lib/logger';
 
 interface RateLimitConfig {
   limit: number;
@@ -12,19 +13,30 @@ const defaultConfig: RateLimitConfig = {
   window: 300, // 5 minutes
 };
 
+const logger = createLogger('server:lib:rate-limits');
+
 const isRateLimited = async (
   key: string,
   config: RateLimitConfig = defaultConfig
 ): Promise<boolean> => {
-  const redisKey = `rt:${key}`;
-  const attempts = await redis.incr(redisKey);
-
-  // Set expiry on first attempt
-  if (attempts === 1) {
-    await redis.expire(redisKey, config.window);
+  if (!redis.isOpen) {
+    return false;
   }
 
-  return attempts > config.limit;
+  const redisKey = `rt:${key}`;
+
+  try {
+    const attempts = await redis.incr(redisKey);
+
+    if (attempts === 1) {
+      await redis.expire(redisKey, config.window);
+    }
+
+    return attempts > config.limit;
+  } catch (error) {
+    logger.warn({ err: error, key: redisKey }, 'Rate limit check skipped');
+    return false;
+  }
 };
 
 export const isAuthIpRateLimited = async (ip: string): Promise<boolean> => {

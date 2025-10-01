@@ -281,3 +281,14 @@
 - `sleep 10` exited 124 due to default timeout; reran with python3 sleep workaround.
 - `python` binary unavailable when attempting sleep helper.
 - `cat compile.log` failed (ENOENT).
+
+# Session Debrief – 2025-09-30 07:42 CEST
+
+## Summary
+- Identified Redis rate-limit dependency as source of /client/v1/accounts/emails/login 500s and wrapped redis.incr/expire with fallback logging (apps/server/src/lib/rate-limits.ts:16-38).
+
+## Priority 1
+- Run hosting/tests/api_tests.sh to confirm login succeeds with Redis unavailable.
+
+## Errors
+- None.
