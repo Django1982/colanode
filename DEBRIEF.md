@@ -303,3 +303,25 @@
 
 ## Errors
 - None.
+
+# Session Debrief – 2025-09-30 08:26 CEST
+
+## Summary
+- Made account/workspace login handler idempotent so repeated web sign-ins reuse existing records (packages/client/src/handlers/mutations/accounts/base.ts:16).
+
+## Priority 1
+- Re-run hosting/tests/api_tests.sh to confirm login now succeeds via web UI.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 08:32 CEST
+
+## Summary
+- Verified @colanode/client build succeeds (`npm run build -w @colanode/client`) after account/workspace upsert adjustments (packages/client/src/handlers/mutations/accounts/base.ts:15).
+
+## Priority 1
+- None.
+
+## Errors
+- None.

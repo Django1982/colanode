@@ -79,5 +79,5 @@
   status: in-progress
   short: "Client Web UI login broken"
   details: |
-    Web login now auto-registers the current host server and posts to /client/v1/accounts/emails/login (packages/ui/src/lib/api.ts:1; packages/ui/src/components/accounts/login-form.tsx:24).
+    Web login now auto-registers the current host server (packages/ui/src/lib/api.ts:1; packages/ui/src/components/accounts/login-form.tsx:24) and account/workspace persistence tolerates repeated sign-ins (packages/client/src/handlers/mutations/accounts/base.ts:16).
     Pending: rerun hosting/tests/api_tests.sh to confirm browser login establishes session state.

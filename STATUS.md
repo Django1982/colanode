@@ -236,3 +236,7 @@
 2025-09-30 08:05 CEST - Derived current host config URL helper for auto-login (packages/ui/src/lib/api.ts:1).
 
 2025-09-30 08:06 CEST - Login form now auto-registers current server before calling /client/v1/accounts/emails/login (packages/ui/src/components/accounts/login-form.tsx:24).
+
+2025-09-30 08:25 CEST - Upsert app account/workspace records during login to stop duplicate constraint errors (packages/client/src/handlers/mutations/accounts/base.ts:16).
+
+2025-09-30 08:32 CEST - npm run build -w @colanode/client succeeded after login upsert fixes.
