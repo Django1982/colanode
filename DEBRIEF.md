@@ -199,3 +199,85 @@
 
 ## Errors
 - compile.log missing while resuming TypeScript diagnostics review.
+
+# Session Debrief – 2025-09-30 06:42 CEST
+
+## Summary
+- Inspected apps/server/src/api/client/routes/auth/device-token-issue.ts to trace cna_ issuance logic; database insert relies on the new devices.scopes column added in migration 00034.
+- Remote 500 responses likely originate from production instances where the migration has not yet run, so inserting scopes triggers a SQL error that the error handler surfaces as ApiErrorCode.Unknown.
+
+## Priority 1
+- Ensure devices table migration (00034) is applied before deploying the updated device-token issuance flow.
+
+## Errors
+- Remote verification blocked by sandbox networking; unable to confirm via live curl until migration status is resolved.
+
+# Session Debrief – 2025-09-30 06:45 CEST
+
+## Summary
+- Confirmed production schema already includes devices.scopes; adjusted apps/server/src/api/client/routes/auth/device-token-issue.ts to trim platform/version values to 30 characters so inserts honor varchar limits.
+
+## Priority 1
+- Re-test device-token issuance once remote access is available to ensure string truncation resolves prior 500 responses.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 06:50 CEST
+
+## Summary
+- Created hosting/tests/device_token_test.sh to exercise the issuance and follow-up workspace request end-to-end using curl and jq with env-provided tokens.
+
+## Priority 1
+- Run the script against the live server after networking access is restored to verify the flow succeeds.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 06:55 CEST
+
+## Summary
+- Examined device_token_response.log and server logs; the 500 originates from Fastify error FST_ERR_CTP_EMPTY_JSON_BODY after an HTTP→HTTPS redirect drops the JSON payload, and our error handler maps the parse failure to ApiErrorCode.Unknown.
+
+## Priority 1
+- Decide whether to tolerate empty JSON by defaulting to {} or adjust client calls to avoid redirects so Fastify receives the body intact.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 07:02 CEST
+
+## Summary
+- Added tolerant JSON parser in apps/server/src/app.ts so empty bodies parse as {} and defaulted request.body casting in apps/server/src/api/client/routes/auth/device-token-issue.ts to guard against undefined payloads after redirects.
+
+## Priority 1
+- Coordinate with infra to ensure proxy redirects preserve POST bodies; current parser workaround unblocks issuance but long-term fix lives in proxy config.
+
+## Errors
+- None.
+
+# Session Debrief – 2025-09-30 07:10 CEST
+
+## Summary
+- Extended JSON parser to normalize Buffer payloads before parsing and limited device-token scope handling to actual arrays, protecting against TypeScript regressions introduced by the redirect workaround.
+
+## Priority 1
+- Await rerun of device_token_test.sh to confirm issuance now succeeds with the tolerant parser.
+
+## Errors
+- compile.log still absent when checking for TypeScript status.
+
+# Session Debrief – 2025-09-30 07:24 CEST
+
+## Summary
+- Confirmed /client/v1/accounts/emails/login handler uses email/password schema and argon2 verification (apps/server/src/api/client/routes/accounts/email-login.ts:24, packages/core/src/types/accounts.ts:53, apps/server/src/lib/accounts.ts:55).
+- Verified route mounts through accounts/index.ts:21, routes/index.ts:13, api/index.ts:15 ensuring /client/v1/accounts/emails/login exposure.
+- Flagged buildLoginSuccessOutput device insert (apps/server/src/lib/accounts.ts:86) as potential failure point if devices.scopes migration missing.
+
+## Priority 1
+- Validate devices.scopes migration and login device insert path to restore /client/v1/accounts/emails/login.
+
+## Errors
+- `sleep 10` exited 124 due to default timeout; reran with python3 sleep workaround.
+- `python` binary unavailable when attempting sleep helper.
+- `cat compile.log` failed (ENOENT).

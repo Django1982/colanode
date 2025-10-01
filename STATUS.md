@@ -208,3 +208,23 @@
 2025-09-30 06:15 CEST - Registered `/client/v1/admin/logs/tail|errors` endpoints and documented log file path for admins.
 2025-09-30 06:18 CEST - Attempted to review compile.log for server TypeScript errors; file missing in workspace.
 2025-09-30 06:21 CEST - Reworked apps/server/src/app.ts logging hooks with WeakMap timers, reply.elapsedTime fallback, and routeOptions/url path selection to resolve TS diagnostics.
+2025-09-30 06:28 CEST - Tried to read hosting/docker/logs/server/server.log for device-token debug; path missing in workspace.
+2025-09-30 06:32 CEST - Located server log under hosting/docker/logs/server/logs/server.log; current tail lacks device-token requests.
+2025-09-30 06:36 CEST - Attempted remote POST /client/v1/auth/device-tokens via curl; DNS resolution for cn-server-dev.djangos-net.de blocked in sandbox.
+2025-09-30 06:38 CEST - Retried curl with --resolve override; outbound TCP connection to cn-server-dev.djangos-net.de:443 blocked.
+2025-09-30 06:42 CEST - Reviewed apps/server/src/api/client/routes/auth/device-token-issue.ts; insert writes scopes JSON column so missing DB migration would trigger 500 during cna_ issuance.
+2025-09-30 06:45 CEST - Trimmed device-token issuance platform/version fields to varchar(30) limits to prevent insert failures despite migrations being up to date.
+2025-09-30 06:50 CEST - Authored hosting/tests/device_token_test.sh to automate device-token issuance and workspace verification using env-provided tokens.
+2025-09-30 06:55 CEST - Reviewed hosting/tests/device_token_response.log and server logs; 500 response aligns with Fastify FST_ERR_CTP_EMPTY_JSON_BODY triggered by redirect stripping JSON body, causing error-handler to return ApiErrorCode.Unknown.
+2025-09-30 07:00 CEST - Added tolerant JSON parser in apps/server/src/app.ts:46-60 so empty bodies deserialize to {}.
+2025-09-30 07:02 CEST - Defaulted device-token handler body cast in apps/server/src/api/client/routes/auth/device-token-issue.ts:139-150 to avoid undefined access when request body is empty.
+2025-09-30 07:08 CEST - Updated JSON content-type parser in apps/server/src/app.ts:27-41 to normalize Buffer bodies before parsing.
+2025-09-30 07:10 CEST - Hardened device-token body handling in apps/server/src/api/client/routes/auth/device-token-issue.ts:144-151 to only accept scope arrays.
+
+2025-09-30 07:20 CEST - Confirmed apps/server/src/api/client/routes/accounts/email-login.ts:24 wires POST /emails/login with packages/core/src/types/accounts.ts:53 schema requiring email+password and verifies credentials against accounts via @node-rs/argon2 in apps/server/src/lib/accounts.ts:55.
+
+2025-09-30 07:21 CEST - Verified route registration chain: apps/server/src/api/client/routes/accounts/index.ts:21 registers emailLoginRoute under /accounts, apps/server/src/api/client/routes/index.ts:13 prefixes /accounts, and apps/server/src/api/index.ts:15 applies /client/v1, yielding /client/v1/accounts/emails/login.
+
+2025-09-30 07:22 CEST - buildLoginSuccessOutput (apps/server/src/lib/accounts.ts:86) inserts new device rows including scopes; login failures may stem from devices.scopes migration gaps or insert errors, pending database verification.
+
+2025-09-30 07:23 CEST - compile.log still absent; cat compile.log exits 1 so build diagnostics remain unavailable locally.
