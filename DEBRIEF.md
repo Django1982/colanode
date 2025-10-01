@@ -292,3 +292,14 @@
 
 ## Errors
 - None.
+
+# Session Debrief – 2025-09-30 08:07 CEST
+
+## Summary
+- Added current-host config resolver and auto server registration so web login posts to /client/v1/accounts/emails/login (packages/ui/src/lib/api.ts:1, packages/ui/src/components/accounts/login-form.tsx:24).
+
+## Priority 1
+- Run hosting/tests/api_tests.sh to verify web login succeeds end-to-end.
+
+## Errors
+- None.

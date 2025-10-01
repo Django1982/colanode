@@ -70,6 +70,14 @@
   status: in-progress
   short: "Login endpoint fails while logout succeeds"
   details: |
-    Observed: /client/v1/accounts/emails/logout works correctly, but /client/v1/accounts/emails/login returned 500 when Redis unavailable.
+    Observed: /client/v1/accounts/emails/logout works correctly, but /client/v1/accounts/emails/login returned 500 when Redis was unavailable.
     Fix applied: rate limit helper now skips Redis errors and logs fallback (apps/server/src/lib/rate-limits.ts:16-38).
     Pending: rerun hosting/tests/api_tests.sh to verify login with Redis offline or misconfigured.
+
+- priority: 1
+  source: ai
+  status: in-progress
+  short: "Client Web UI login broken"
+  details: |
+    Web login now auto-registers the current host server and posts to /client/v1/accounts/emails/login (packages/ui/src/lib/api.ts:1; packages/ui/src/components/accounts/login-form.tsx:24).
+    Pending: rerun hosting/tests/api_tests.sh to confirm browser login establishes session state.

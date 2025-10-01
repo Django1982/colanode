@@ -232,3 +232,7 @@
 2025-09-30 07:40 CEST - Hardened rate limit helper to skip Redis errors (apps/server/src/lib/rate-limits.ts:16) so email login no longer throws when Redis unavailable.
 
 2025-09-30 07:41 CEST - Login flow expected to succeed after redis fallback; awaiting hosting/tests/api_tests.sh confirmation.
+
+2025-09-30 08:05 CEST - Derived current host config URL helper for auto-login (packages/ui/src/lib/api.ts:1).
+
+2025-09-30 08:06 CEST - Login form now auto-registers current server before calling /client/v1/accounts/emails/login (packages/ui/src/components/accounts/login-form.tsx:24).

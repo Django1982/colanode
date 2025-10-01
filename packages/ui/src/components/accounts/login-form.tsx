@@ -1,5 +1,5 @@
 import { HouseIcon } from 'lucide-react';
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment, useEffect, useMemo, useRef } from 'react';
 import { match } from 'ts-pattern';
 
 import { isFeatureSupported } from '@colanode/client/lib';
@@ -10,6 +10,7 @@ import { EmailPasswordResetInit } from '@colanode/ui/components/accounts/email-p
 import { EmailRegister } from '@colanode/ui/components/accounts/email-register';
 import { EmailVerify } from '@colanode/ui/components/accounts/email-verify';
 import { ServerDropdown } from '@colanode/ui/components/servers/server-dropdown';
+import { getCurrentServerInfo } from '@colanode/ui/lib/api';
 import { Button } from '@colanode/ui/components/ui/button';
 import { Separator } from '@colanode/ui/components/ui/separator';
 import { useApp } from '@colanode/ui/contexts/app';
@@ -54,12 +55,46 @@ type PanelState =
 export const LoginForm = ({ accounts, servers }: LoginFormProps) => {
   const app = useApp();
 
+  const currentServerInfo = useMemo(() => getCurrentServerInfo(), []);
+  const hasAttemptedAutoServerRef = useRef(false);
+
   const [serverDomain, setServerDomain] = useState<string | null>(
     servers[0]?.domain ?? null
   );
   const [panel, setPanel] = useState<PanelState>({
     type: 'login',
   });
+
+  useEffect(() => {
+    if (!currentServerInfo) {
+      return;
+    }
+
+    const { domain, configUrl } = currentServerInfo;
+    const serverExists = servers.some((s) => s.domain === domain);
+
+    if (serverExists) {
+      if (!serverDomain) {
+        setServerDomain(domain);
+      }
+      return;
+    }
+
+    if (hasAttemptedAutoServerRef.current) {
+      return;
+    }
+
+    hasAttemptedAutoServerRef.current = true;
+
+    void window.colanode
+      .executeMutation({
+        type: 'server.create',
+        url: configUrl,
+      })
+      .catch((error) => {
+        console.error('Failed to register current server', error);
+      });
+  }, [currentServerInfo, servers, serverDomain]);
 
   useEffect(() => {
     const serverExists =
