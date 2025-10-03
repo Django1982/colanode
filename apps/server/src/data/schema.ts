@@ -16,6 +16,7 @@ import {
   DocumentContent,
   UpdateMergeMetadata,
   ServerRole,
+  DeviceTokenScopeValue,
 } from '@colanode/core';
 import { AccountAttributes } from '@colanode/server/types/accounts';
 
@@ -54,6 +55,7 @@ interface DeviceTable {
   ip: ColumnType<string | null, string | null, string | null>;
   created_at: ColumnType<Date, Date, never>;
   synced_at: ColumnType<Date | null, Date | null, Date>;
+  scopes: JSONColumnType<DeviceTokenScopeValue[], DeviceTokenScopeValue[], DeviceTokenScopeValue[]>;
 }
 
 export type SelectDevice = Selectable<DeviceTable>;

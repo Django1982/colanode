@@ -22,7 +22,10 @@ import {
   generateOtpCode,
   saveOtp,
 } from '@colanode/server/lib/otps';
-import { generateToken } from '@colanode/server/lib/tokens';
+import {
+  generateToken,
+  normalizeDeviceScopes,
+} from '@colanode/server/lib/tokens';
 import { createDefaultWorkspace } from '@colanode/server/lib/workspaces';
 import { emailService } from '@colanode/server/services/email-service';
 import { jobService } from '@colanode/server/services/job-service';
@@ -32,6 +35,7 @@ import {
 } from '@colanode/server/templates';
 import { ClientContext } from '@colanode/server/types/api';
 import { DeviceType } from '@colanode/server/types/devices';
+import { DeviceTokenScope } from '@colanode/core';
 import {
   Otp,
   AccountVerifyOtpAttributes,
@@ -137,6 +141,7 @@ export const buildLoginSuccessOutput = async (
 
   const deviceId = generateId(IdType.Device);
   const { token, salt, hash } = generateToken(deviceId);
+  const scopes = normalizeDeviceScopes([DeviceTokenScope.ApprovalFull]);
 
   const device = await database
     .insertInto('devices')
@@ -151,6 +156,7 @@ export const buildLoginSuccessOutput = async (
       platform: trimString(client.platform, 255),
       version: client.version,
       created_at: new Date(),
+      scopes: JSON.stringify(scopes) as any,
     })
     .returningAll()
     .executeTakeFirst();
@@ -170,6 +176,7 @@ export const buildLoginSuccessOutput = async (
     },
     workspaces: workspaceOutputs,
     deviceId: device.id,
+    scopes,
     token,
   };
 };

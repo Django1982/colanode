@@ -33,6 +33,7 @@ import { addWorkspaceIndexToUploads } from './00030-add-workspace-index-to-uploa
 import { addCreatedAtIndexToUploads } from './00031-add-created-at-index-to-uploads';
 import { addApiTokensAndAuditLogs } from './00032-add-api-tokens-and-audit-logs';
 import { addServerRoleAndSoftDelete } from './00033-add-server-role-and-soft-delete';
+import { addDeviceScopes } from './00034-add-device-scopes';
 
 export const databaseMigrations: Record<string, Migration> = {
   '00001_create_accounts_table': createAccountsTable,
@@ -72,4 +73,5 @@ export const databaseMigrations: Record<string, Migration> = {
   '00031_add_created_at_index_to_uploads': addCreatedAtIndexToUploads,
   '00032_add_api_tokens_and_audit_logs': addApiTokensAndAuditLogs,
   '00033_add_server_role_and_soft_delete': addServerRoleAndSoftDelete,
+  '00034_add_device_scopes': addDeviceScopes,
 };

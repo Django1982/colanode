@@ -1,4 +1,5 @@
 import ky from 'ky';
+
 import { ServerConfig } from '@colanode/core';
 
 export const api = {

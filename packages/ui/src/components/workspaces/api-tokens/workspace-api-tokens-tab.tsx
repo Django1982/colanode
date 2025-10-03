@@ -1,4 +1,4 @@
-import { Copy } from 'lucide-react';
+import { Copy, Key } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -12,6 +12,7 @@ import { Input } from '@colanode/ui/components/ui/input';
 import { Label } from '@colanode/ui/components/ui/label';
 import { Separator } from '@colanode/ui/components/ui/separator';
 import { Spinner } from '@colanode/ui/components/ui/spinner';
+import { Switch } from '@colanode/ui/components/ui/switch';
 import { useWorkspace } from '@colanode/ui/contexts/workspace';
 import { useMutation } from '@colanode/ui/hooks/use-mutation';
 import { useQuery } from '@colanode/ui/hooks/use-query';
@@ -42,6 +43,15 @@ const scopesOptions: { value: ApiTokenScopeValue; label: string; description: st
 ];
 
 export const WorkspaceApiTokensTab = () => {
+  return (
+    <div className="flex items-center space-x-2">
+      <Key className="size-4" />
+      <span>API Tokens</span>
+    </div>
+  );
+};
+
+export const WorkspaceApiTokens = () => {
   const workspace = useWorkspace();
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [name, setName] = useState('');
@@ -53,6 +63,7 @@ export const WorkspaceApiTokensTab = () => {
   const [latestSecret, setLatestSecret] = useState<WorkspaceApiTokenSecretOutput | null>(
     null
   );
+  const [showIds, setShowIds] = useState(false);
 
   const tokensQuery = useQuery(
     {
@@ -313,6 +324,25 @@ export const WorkspaceApiTokensTab = () => {
         </div>
       )}
 
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="text-sm text-muted-foreground">
+          Manage personal access tokens for API integrations.
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="workspace-api-token-ids-toggle"
+            checked={showIds}
+            onCheckedChange={setShowIds}
+          />
+          <Label
+            htmlFor="workspace-api-token-ids-toggle"
+            className="text-xs text-muted-foreground"
+          >
+            Show token IDs
+          </Label>
+        </div>
+      </div>
+
       <div className="overflow-hidden rounded-lg border border-border">
         <table className="min-w-full divide-y divide-border text-sm">
           <thead className="bg-muted/60">
@@ -335,6 +365,11 @@ export const WorkspaceApiTokensTab = () => {
                     <span className="text-xs text-muted-foreground">
                       {token.description ?? '—'}
                     </span>
+                    {showIds && (
+                      <span className="text-[11px] font-mono text-muted-foreground">
+                        ID: {token.id}
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-xs font-mono">{token.tokenPrefix}</td>

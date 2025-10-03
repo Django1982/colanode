@@ -41,6 +41,8 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@openai/codex": "^0.42.0",
+    "codex-monorepo": "github:openai/codex",
     "debug": "^4.4.1",
     "lodash-es": "^4.17.21"
   }

@@ -3,6 +3,13 @@ import { z } from 'zod/v4';
 export const redisConfigSchema = z.object({
   url: z.string({ error: 'REDIS_URL is required' }),
   db: z.coerce.number().default(0),
+  health: z
+    .object({
+      optional: z.boolean().default(false),
+    })
+    .default({
+      optional: false,
+    }),
   jobs: z.object({
     name: z.string().optional().default('jobs'),
     prefix: z.string().optional().default('colanode'),
@@ -20,6 +27,9 @@ export const readRedisConfigVariables = () => {
   return {
     url: process.env.REDIS_URL,
     db: process.env.REDIS_DB,
+    health: {
+      optional: process.env.REDIS_HEALTH_OPTIONAL === 'true',
+    },
     jobs: {
       name: process.env.REDIS_JOBS_NAME,
       prefix: process.env.REDIS_JOBS_PREFIX,

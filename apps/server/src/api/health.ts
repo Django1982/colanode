@@ -11,6 +11,7 @@ export const healthRoutes: FastifyPluginCallback = (instance, _, done) => {
     method: 'GET',
     url: '/health',
     handler: async (_, reply) => {
+      const redisOptional = config.redis.health.optional;
       const checks: Record<string, boolean> = {
         database: false,
         redis: false,
@@ -39,15 +40,31 @@ export const healthRoutes: FastifyPluginCallback = (instance, _, done) => {
         instance.log.error({ error }, 'Storage health check failed');
       }
 
-      const healthy = Object.values(checks).every((value) => value);
+      const requiredChecks: Array<keyof typeof checks> = ['database', 'storage'];
+      if (!redisOptional) {
+        requiredChecks.push('redis');
+      }
 
-      return reply.code(healthy ? 200 : 503).send({
-        status: healthy ? 'ok' : 'degraded',
+      const requiredHealthy = requiredChecks.every((key) => checks[key]);
+      const redisDegraded = redisOptional && !checks.redis;
+      const status = requiredHealthy && !redisDegraded ? 'ok' : 'degraded';
+      const replyStatus = requiredHealthy ? 200 : 503;
+
+      const payload: Record<string, unknown> = {
+        status,
         time: new Date().toISOString(),
         version: config.server.version,
         sha: config.server.sha ?? null,
         checks,
-      });
+      };
+
+      if (redisOptional) {
+        payload.optional = {
+          redis: true,
+        };
+      }
+
+      return reply.code(replyStatus).send(payload);
     },
   });
 

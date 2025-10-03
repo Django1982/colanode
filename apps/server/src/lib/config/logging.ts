@@ -4,6 +4,13 @@ export const loggingConfigSchema = z.object({
   level: z
     .enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'])
     .default('info'),
+  server: z
+    .object({
+      path: z.string().default('/var/log/colanode/server.log'),
+    })
+    .default({
+      path: '/var/log/colanode/server.log',
+    }),
   audit: z
     .object({
       enabled: z.boolean().default(true),
@@ -25,6 +32,9 @@ export const readLoggingConfigVariables = () => {
 
   return {
     level: process.env.LOGGING_LEVEL,
+    server: {
+      path: process.env.LOGGING_SERVER_PATH,
+    },
     audit: {
       enabled:
         auditEnabled === undefined ? undefined : auditEnabled === 'true',

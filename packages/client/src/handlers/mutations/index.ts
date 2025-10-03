@@ -3,6 +3,10 @@ import { MutationMap } from '@colanode/client/mutations';
 import { AppService } from '@colanode/client/services';
 
 import { AccountLogoutMutationHandler } from './accounts/account-logout';
+import {
+  AccountDeviceTokenCreateMutationHandler,
+  AccountDeviceTokenRevokeMutationHandler,
+} from './accounts/account-device-tokens';
 import { AccountMetadataDeleteMutationHandler } from './accounts/account-metadata-delete';
 import { AccountMetadataUpdateMutationHandler } from './accounts/account-metadata-update';
 import { AccountPasswordRotateMutationHandler } from './accounts/account-password-rotate';
@@ -78,6 +82,12 @@ import { WorkspaceCreateMutationHandler } from './workspaces/workspace-create';
 import { WorkspaceDeleteMutationHandler } from './workspaces/workspace-delete';
 import { WorkspaceMetadataDeleteMutationHandler } from './workspaces/workspace-metadata-delete';
 import { WorkspaceMetadataUpdateMutationHandler } from './workspaces/workspace-metadata-update';
+import { WorkspaceApiSettingsUpdateMutationHandler } from './workspaces/workspace-api-settings-update';
+import {
+  WorkspaceApiTokenCreateMutationHandler,
+  WorkspaceApiTokenDeleteMutationHandler,
+  WorkspaceApiTokenRotateMutationHandler,
+} from './workspaces/workspace-api-tokens';
 import { WorkspaceUpdateMutationHandler } from './workspaces/workspace-update';
 
 export type MutationHandlerMap = {
@@ -133,6 +143,11 @@ export const buildMutationHandlerMap = (
     'user.role.update': new UserRoleUpdateMutationHandler(app),
     'users.create': new UsersCreateMutationHandler(app),
     'workspace.create': new WorkspaceCreateMutationHandler(app),
+    'workspace.api-tokens.create': new WorkspaceApiTokenCreateMutationHandler(app),
+    'workspace.api-tokens.rotate': new WorkspaceApiTokenRotateMutationHandler(app),
+    'workspace.api-tokens.delete': new WorkspaceApiTokenDeleteMutationHandler(app),
+    'workspace.api-settings.update':
+      new WorkspaceApiSettingsUpdateMutationHandler(app),
     'workspace.update': new WorkspaceUpdateMutationHandler(app),
     'avatar.upload': new AvatarUploadMutationHandler(app),
     'account.logout': new AccountLogoutMutationHandler(app),
@@ -143,6 +158,8 @@ export const buildMutationHandlerMap = (
     'space.child.reorder': new SpaceChildReorderMutationHandler(app),
     'account.update': new AccountUpdateMutationHandler(app),
     'account.password.rotate': new AccountPasswordRotateMutationHandler(app),
+    'account.device-tokens.create': new AccountDeviceTokenCreateMutationHandler(app),
+    'account.device-tokens.revoke': new AccountDeviceTokenRevokeMutationHandler(app),
     'admin.account.server-role.update':
       new AdminAccountServerRoleUpdateMutationHandler(app),
     'admin.account.status.update': new AdminAccountStatusUpdateMutationHandler(app),

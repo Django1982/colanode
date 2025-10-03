@@ -41,7 +41,7 @@ export const ContainerBody = ({
   return (
     <div
       className={cn(
-        'px-10 py-4 flex-grow max-h-full h-full overflow-hidden',
+        'px-10 py-4 flex-grow max-h-full h-full overflow-y-auto',
         className
       )}
       {...props}

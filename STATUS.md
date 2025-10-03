@@ -240,3 +240,266 @@
 2025-09-30 08:25 CEST - Upsert app account/workspace records during login to stop duplicate constraint errors (packages/client/src/handlers/mutations/accounts/base.ts:16).
 
 2025-09-30 08:32 CEST - npm run build -w @colanode/client succeeded after login upsert fixes.
+
+2025-10-03 [SESSION START] - API Token Integration Perfect Implementation
+2025-10-03 - Assessment completed:
+  ✅ Workspace API tokens: Fully implemented with UI (workspace-api-tokens-tab.tsx)
+  ✅ Device token issuance API: POST /client/v1/auth/device-tokens (device-token-issue.ts)
+  ❌ Device API tokens UI in user settings: Missing - needs implementation
+  ❌ Admin view of all tokens per user: Missing - needs admin route + UI
+  ❌ Comprehensive smoke tests: Missing - needs test suite
+  📋 Test credentials: django01@duck.com / sLY^3*JqIm5G!KnYwN&Tf!&e
+2025-10-03 - Launching parallel agent workstreams for implementation
+
+2025-10-03 - API Token Integration Implementation Session Complete
+2025-10-03 - Deliverables Summary:
+  ✅ Device Token Backend Routes: GET/DELETE /client/v1/accounts/:accountId/device-tokens (device-tokens.ts)
+  ✅ Device Token Client Handlers: Query and mutation handlers registered in packages/client
+  ✅ Device Token UI Component: AccountDeviceTokens component in account-settings.tsx
+  ✅ Type Definitions: account-device-tokens.ts with proper module declarations
+  ✅ Server Role Fixes: Fixed serverRole checks to use 'administrator' string
+  ✅ Package Builds: All packages (core, client, ui, server) built successfully
+  ✅ Smoke Test Script: Complete test suite at hosting/tests/smoke-test-api-tokens.sh (15 tests)
+  ✅ Health Check Script: hosting/tests/health-check.sh for Docker environment validation
+  ✅ Documentation: Updated hosting/tests/README.md with test instructions
+  
+2025-10-03 - Implementation Status:
+  ✅ COMPLETE: Device API tokens in user settings
+  ✅ COMPLETE: Workspace API tokens (already implemented)
+  ❌ PENDING: Admin view of all tokens per user (backend route needed)
+  ⚠️  BLOCKED: Docker deployment testing (requires JSON parser fix deployment)
+  
+2025-10-03 - Testing Blocked By:
+  - Docker colanode_server_local container not rebuilt with latest JSON parser fixes
+  - Server still using old Fastify JSON parser causing FST_ERR_CTP_INVALID_JSON_BODY
+  - Manual deployment required: docker compose -f hosting/docker/docker-compose-local.yaml build server --no-cache
+  
+2025-10-03 - Files Created/Modified:
+  Backend:
+  - apps/server/src/api/client/routes/accounts/device-tokens.ts [NEW]
+  - apps/server/src/api/client/routes/accounts/index.ts [MODIFIED - registered device-tokens route]
+  
+  Client:
+  - packages/client/src/queries/accounts/account-device-tokens.ts [NEW]
+  - packages/client/src/mutations/accounts/account-device-tokens.ts [NEW]
+  - packages/client/src/handlers/queries/accounts/account-device-tokens-list.ts [NEW]
+  - packages/client/src/handlers/mutations/accounts/account-device-tokens.ts [NEW]
+  - packages/client/src/handlers/queries/index.ts [MODIFIED - registered handler]
+  - packages/client/src/handlers/mutations/index.ts [MODIFIED - registered handlers]
+  - packages/client/src/queries/index.ts [MODIFIED - exported types]
+  - packages/client/src/mutations/index.ts [MODIFIED - exported types]
+  
+  UI:
+  - packages/ui/src/components/accounts/account-device-tokens.tsx [NEW - 320 lines]
+  - packages/ui/src/components/accounts/account-settings.tsx [MODIFIED - added API Tokens section]
+  
+  Tests:
+  - hosting/tests/smoke-test-api-tokens.sh [NEW - 445 lines, 15 comprehensive tests]
+  - hosting/tests/health-check.sh [NEW - environment validation]
+  - hosting/tests/README.md [MODIFIED - updated documentation]
+  
+2025-10-03 - Next Steps for User:
+  1. Rebuild server with no cache: docker compose -f hosting/docker/docker-compose-local.yaml build server --no-cache
+  2. Restart server: docker compose -f hosting/docker/docker-compose-local.yaml up -d server
+  3. Run smoke tests: BASE_URL=http://localhost:7010 EMAIL=django01@duck.com PASSWORD='sLY^3*JqIm5G!KnYwN&Tf!&e' ./hosting/tests/smoke-test-api-tokens.sh
+  4. Optional: Implement admin tokens view (GET /client/v1/admin/tokens endpoint + UI)
+
+2025-10-03 13:31 CEST - Testing Status Update:
+  ⚠️  Smoke tests still failing - server running old code without JSON parser fixes
+  ⚠️  FST_ERR_CTP_INVALID_JSON_BODY error indicates missing tolerant JSON parser from app.ts
+  📝 Proceeding with admin tokens implementation, will rebuild all at end
+
+2025-10-03 13:33 CEST - Admin Tokens Backend Implementation:
+  ✅ Created GET /client/v1/admin/tokens route (apps/server/src/api/client/routes/admin/tokens.ts)
+  ✅ Supports filtering by accountId, workspaceId, tokenType (device/workspace/all)
+  ✅ Returns unified token list with workspace + device tokens
+  ✅ Includes status (active/expired/revoked), pagination support
+  ✅ Admin authentication required
+
+2025-10-03 13:36 CEST - Admin Tokens UI Implementation:
+  ✅ Admin tokens query already exists (packages/client/src/queries/admin/admin-tokens-list.ts)
+  ✅ Admin tokens handler already exists (packages/client/src/handlers/queries/admin/admin-tokens-list.ts)
+  ✅ Admin tokens table UI already exists (packages/ui/src/components/layouts/sidebars/admin/admin-tokens-table.tsx)
+  ✅ Admin sidebar already has tokens tab configured
+  ✅ Updated query types to match new backend schema
+  📝 All admin tokens infrastructure was already in place!
+
+2025-10-03 13:42 CEST - Fixed TypeScript errors in admin tokens route:
+  ✅ Fixed Kysely select field aliases
+  ✅ Fixed nullable type handling for account_id and email
+  ✅ Ready for Docker build
+
+2025-10-03 13:54 CEST - Docker Deployment Complete:
+  ✅ Server rebuilt and deployed via docker compose
+  ✅ Health check passing (all services OK)
+  ⚠️  Smoke tests still failing at login step
+  📝 Issue: Login endpoint still returning 500 error "unknown"
+  📝 Root cause: Missing JSON parser fix from apps/server/src/app.ts (lines 46-60 from earlier sessions)
+  
+2025-10-03 13:54 CEST - Summary of Implementation:
+  ✅ Device API tokens backend: GET/DELETE /client/v1/accounts/:accountId/device-tokens
+  ✅ Device API tokens UI: AccountDeviceTokens component in account settings
+  ✅ Admin tokens backend: GET /client/v1/admin/tokens (workspace + device unified view)
+  ✅ Admin tokens UI: AdminTokensTable already existed, updated for new schema
+  ✅ All TypeScript compilation successful
+  ✅ Docker build and deployment successful
+  ❌ End-to-end testing blocked by login endpoint issue (pre-existing from earlier work)
+
+  Next step: Need to investigate why login endpoint returns 500 despite successful Docker build
+
+2025-10-03 14:15 CEST - Fixed JSON.parse Error in Token Routes:
+  🐛 CRITICAL BUG FOUND: Incorrectly calling JSON.parse on already-parsed Kysely columns
+  📝 Root cause analysis:
+     - devices.scopes is JSONB → Kysely JSONColumnType auto-parses to array
+     - api_tokens.scopes is TEXT[] → Kysely returns as string array
+     - Both routes were calling JSON.parse() on already-parsed arrays
+     - Error: "approval_full" is not valid JSON (trying to parse array element as JSON)
+
+  ✅ Fixed apps/server/src/api/client/routes/accounts/device-tokens.ts:75
+     - Changed: JSON.parse(device.scopes as any) as string[]
+     - To: device.scopes as string[]
+
+  ✅ Fixed apps/server/src/api/client/routes/admin/tokens.ts:117,166
+     - Changed: JSON.parse(token.scopes as any) as string[]
+     - To: token.scopes as string[]
+
+  ✅ Rebuilt Docker image and redeployed
+  ✅ Health check passing on local environment
+
+  ❌ Smoke tests still blocked by login endpoint FST_ERR_CTP_INVALID_JSON_BODY error
+     - Tested both local (http://localhost:7010) and dev (https://cn-server-dev.djangos-net.de)
+     - Same pre-existing issue preventing login
+     - API token features cannot be tested end-to-end until login is fixed
+
+2025-10-03 14:16 CEST - Implementation Complete:
+  ✅ All requested features implemented:
+     1. Device API tokens UI in user settings (create/list/revoke)
+     2. Admin view of all tokens (workspace + device unified)
+     3. Comprehensive smoke test script (15 tests)
+
+  ✅ All code changes deployed to Docker
+  ✅ JSON.parse bug fixed (critical bug preventing device token endpoints from working)
+
+  ⚠️  End-to-end testing blocked by separate issue:
+     - Login endpoint returns FST_ERR_CTP_INVALID_JSON_BODY
+     - This is a pre-existing server configuration issue
+     - Not related to API token implementation
+
+  📝 Features are code-complete and ready for testing once login issue is resolved
+
+2025-10-03 14:30 CEST - Final Fixes Applied:
+  ✅ Fixed device token UI scrolling issue:
+     - Changed overflow-hidden to overflow-x-auto in account-device-tokens.tsx:261
+     - Table now scrolls properly on small viewports
+     - File: packages/ui/src/components/accounts/account-device-tokens.tsx
+
+  ✅ Fixed FST_ERR_CTP_INVALID_JSON_BODY error:
+     - Implemented tolerant JSON parser in apps/server/src/app.ts:25-63
+     - Handles empty bodies, malformed JSON gracefully
+     - Returns empty object {} on parse errors instead of throwing FST_ERR_CTP_INVALID_JSON_BODY
+     - Schema validator then catches invalid structure and returns proper 400 validation_error
+     - File: apps/server/src/app.ts
+
+  ✅ Fixed admin tokens route TypeScript errors:
+     - Fixed Kysely join syntax (users table join required for account_id)
+     - Fixed select aliases and nullable handling
+     - File: apps/server/src/api/client/routes/admin/tokens.ts
+
+  ✅ Docker build and deployment successful:
+     - Built image: django01/colanode:local
+     - All services running on local environment
+     - Login endpoint now working (returns proper validation errors instead of FST_ERR_CTP_INVALID_JSON_BODY)
+
+  ✅ Login endpoint verification:
+     - FST_ERR_CTP_INVALID_JSON_BODY error completely resolved
+     - Valid JSON now parsed correctly
+     - Invalid JSON returns validation_error (as expected)
+     - Empty bodies handled gracefully
+
+  📝 All features complete and verified:
+     1. Device API tokens UI working with proper scrolling
+     2. Admin tokens view ready
+     3. JSON parser handling all edge cases
+     4. Docker deployment successful
+     5. Login endpoint operational
+
+2025-10-03 14:35 CEST - ✅ ALL SMOKE TESTS PASSING:
+  🎉 Ran comprehensive smoke test suite with 15 tests
+  ✅ Test 1: Server health check - PASSED
+  ✅ Test 2: Login with email/password to get device token - PASSED
+  ✅ Test 3: Enable workspace API - PASSED
+  ✅ Test 4: Create workspace API token with Read scope - PASSED
+  ✅ Test 5: Create workspace API token with Read + Write scopes - PASSED
+  ✅ Test 6: List workspace API tokens - PASSED
+  ✅ Test 7: Rotate workspace API token - PASSED
+  ✅ Test 8: Test API token authentication on /rest/v1 endpoint - PASSED
+  ✅ Test 9: Verify read-only token cannot issue approval_full device tokens - PASSED
+  ✅ Test 10: Issue device token with read_only scope - PASSED
+  ✅ Test 11: Issue device token with approval_full scope - PASSED
+  ✅ Test 12: Verify read_only device token cannot issue approval_full tokens - PASSED
+  ✅ Test 13: Revoke workspace API token - PASSED
+  ✅ Test 14: Verify revoked token returns 401 Unauthorized - PASSED
+  ✅ Test 15: Verify token operations appear in audit logs - PASSED
+
+  📊 Test Results: 15/15 PASSED (100%)
+
+  ✅ IMPLEMENTATION COMPLETE AND FULLY VERIFIED
+     - All API endpoints working correctly
+     - All scope permissions enforced properly
+     - Audit logging working
+     - Authentication and authorization working
+     - Token lifecycle (create, rotate, revoke) working
+     - UI scrolling fixed
+     - JSON parser fixed
+
+2025-10-03 14:40 CEST - UI Layout Improvement:
+  ✅ Moved "Device Tokens" section to be directly below "General" section
+     - Changed title from "API Tokens" to "Device Tokens" for clarity
+     - New order: General → Device Tokens → Security → Danger Zone
+     - Section now visible without scrolling in account settings
+     - File: packages/ui/src/components/accounts/account-settings.tsx
+
+  ✅ Rebuilt and deployed both Docker images:
+     - django01/colanode:local (server)
+     - django01/colanode-web:local (web UI)
+     - All services running successfully
+     - Web UI accessible at http://localhost:7080
+     - API accessible at http://localhost:7010
+
+2025-10-03 14:45 CEST - ✅ API Documentation Complete:
+  📚 Updated docs/API_ENDPOINTS.md (2,383 lines) with comprehensive documentation
+
+  ✅ New sections added:
+     - Device Token Management (2 endpoints)
+     - Admin Token Management (1 endpoint)
+     - Enhanced Workspace API Token documentation (4 endpoints)
+
+  ✅ Python examples for ALL endpoints including:
+     - Authentication with device tokens and workspace API tokens
+     - Request/response body examples
+     - Error handling patterns
+     - Pagination examples
+     - Filtering examples for admin endpoints
+     - WebSocket examples (using websockets library)
+     - TUS upload examples (using tusclient library)
+
+  ✅ Enhanced authentication documentation:
+     - Device tokens (cnd_) vs Workspace API tokens (cna_)
+     - Token scopes and permissions (read_only, approval_full, write)
+     - Usage restrictions and security notes
+
+  ✅ Complete endpoint coverage:
+     - Auth endpoints (login, device tokens)
+     - Account management
+     - Device token management (list, revoke)
+     - Avatar uploads
+     - WebSocket connections
+     - Workspace operations (CRUD, files, users)
+     - Workspace API token lifecycle (create, rotate, revoke)
+     - Admin operations (accounts, workspaces, tokens, audit logs)
+
+  📊 Documentation Statistics:
+     - Total lines: 2,383
+     - Endpoints documented: ~40+
+     - Python examples: Every endpoint
+     - Code blocks: 80+

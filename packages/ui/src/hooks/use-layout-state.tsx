@@ -9,6 +9,14 @@ import { useWorkspace } from '@colanode/ui/contexts/workspace';
 import { useWindowSize } from '@colanode/ui/hooks/use-window-size';
 import { percentToNumber } from '@colanode/ui/lib/utils';
 
+const normalizeSidebarMenu = (menu?: SidebarMenuType): SidebarMenuType => {
+  if (menu === 'admin') {
+    return 'settings';
+  }
+
+  return menu ?? 'spaces';
+};
+
 export const useLayoutState = () => {
   const workspace = useWorkspace();
   const windowSize = useWindowSize();
@@ -18,13 +26,8 @@ export const useLayoutState = () => {
   );
 
   const storedSidebarMetadata = workspace.getMetadata('sidebar')?.value;
-  const storedSidebarMenu =
-    storedSidebarMetadata?.menu === 'admin'
-      ? 'settings'
-      : storedSidebarMetadata?.menu;
-
   const initialSidebarMetadata: SidebarMetadata = {
-    menu: storedSidebarMenu ?? 'spaces',
+    menu: normalizeSidebarMenu(storedSidebarMetadata?.menu),
     width: storedSidebarMetadata?.width ?? 300,
   };
 
@@ -84,14 +87,16 @@ export const useLayoutState = () => {
 
   const handleMenuChange = useCallback(
     (menu: SidebarMenuType) => {
+      const nextMenu = normalizeSidebarMenu(menu);
+
       setSidebarMetadata({
         ...sidebarMetadata,
-        menu,
+        menu: nextMenu,
       });
 
       workspace.setMetadata('sidebar', {
         ...sidebarMetadata,
-        menu,
+        menu: nextMenu,
       });
     },
     [workspace, sidebarMetadata]

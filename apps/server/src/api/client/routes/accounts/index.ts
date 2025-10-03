@@ -6,6 +6,7 @@ import { authIpRateLimiter } from '@colanode/server/api/client/plugins/auth-ip-r
 import { accountPasswordRoute } from './account-password';
 import { accountSyncRoute } from './account-sync';
 import { accountUpdateRoute } from './account-update';
+import { deviceTokensRoute } from './device-tokens';
 import { emailLoginRoute } from './email-login';
 import { emailPasswordResetCompleteRoute } from './email-password-reset-complete';
 import { emailPasswordResetInitRoute } from './email-password-reset-init';
@@ -32,6 +33,7 @@ export const accountRoutes: FastifyPluginCallback = (instance, _, done) => {
     subInstance.register(accountSyncRoute);
     subInstance.register(accountUpdateRoute);
     subInstance.register(accountPasswordRoute);
+    subInstance.register(deviceTokensRoute);
     subInstance.register(logoutRoute);
   });
 

@@ -3,10 +3,13 @@ import { QueryMap } from '@colanode/client/queries';
 import { AppService } from '@colanode/client/services/app-service';
 
 import { AccountGetQueryHandler } from './accounts/account-get';
+import { AccountDeviceTokensListQueryHandler } from './accounts/account-device-tokens-list';
 import { AccountMetadataListQueryHandler } from './accounts/account-metadata-list';
 import { AccountListQueryHandler } from './accounts/accounts-list';
 import { AdminAccountsListQueryHandler } from './admin/accounts-list';
 import { AdminWorkspacesListQueryHandler } from './admin/workspaces-list';
+import { AdminAuditLogsListQueryHandler } from './admin/audit-logs-list';
+import { AdminTokensListQueryHandler } from './admin/admin-tokens-list';
 import { AppMetadataListQueryHandler } from './apps/app-metadata-list';
 import { AvatarGetQueryHandler } from './avatars/avatar-get';
 import { ChatListQueryHandler } from './chats/chat-list';
@@ -51,6 +54,7 @@ import { UserStorageGetQueryHandler } from './users/user-storage-get';
 import { WorkspaceGetQueryHandler } from './workspaces/workspace-get';
 import { WorkspaceListQueryHandler } from './workspaces/workspace-list';
 import { WorkspaceMetadataListQueryHandler } from './workspaces/workspace-metadata-list';
+import { WorkspaceApiTokensListQueryHandler } from './workspaces/workspace-api-tokens-list';
 import { WorkspaceStorageGetQueryHandler } from './workspaces/workspace-storage-get';
 
 export type QueryHandlerMap = {
@@ -62,8 +66,11 @@ export const buildQueryHandlerMap = (app: AppService): QueryHandlerMap => {
     'app.metadata.list': new AppMetadataListQueryHandler(app),
     'avatar.get': new AvatarGetQueryHandler(app),
     'account.list': new AccountListQueryHandler(app),
+    'account.device-tokens.list': new AccountDeviceTokensListQueryHandler(app),
     'admin.accounts.list': new AdminAccountsListQueryHandler(app),
     'admin.workspaces.list': new AdminWorkspacesListQueryHandler(app),
+    'admin.audit-logs.list': new AdminAuditLogsListQueryHandler(app),
+    'admin.tokens.list': new AdminTokensListQueryHandler(app),
     'message.list': new MessageListQueryHandler(app),
     'node.reaction.list': new NodeReactionsListQueryHandler(app),
     'node.reactions.aggregate': new NodeReactionsAggregateQueryHandler(app),
@@ -74,6 +81,7 @@ export const buildQueryHandlerMap = (app: AppService): QueryHandlerMap => {
     'server.list': new ServerListQueryHandler(app),
     'user.search': new UserSearchQueryHandler(app),
     'workspace.list': new WorkspaceListQueryHandler(app),
+    'workspace.api-tokens.list': new WorkspaceApiTokensListQueryHandler(app),
     'user.list': new UserListQueryHandler(app),
     'file.list': new FileListQueryHandler(app),
     'emoji.list': new EmojiListQueryHandler(app),

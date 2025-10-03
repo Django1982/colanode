@@ -1,3 +1,7 @@
+import { randomUUID } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import nodemailer from 'nodemailer';
 
 import { config } from '@colanode/server/lib/config';
@@ -11,6 +15,18 @@ interface EmailMessage {
 }
 
 const logger = createLogger('server:service:email');
+const devOutboxPath =
+  process.env.SMTP_DEV_OUTBOX ?? join(process.cwd(), 'tmp', 'emails');
+let devOutboxReady = false;
+
+const ensureDevOutbox = async () => {
+  if (devOutboxReady) {
+    return;
+  }
+
+  await mkdir(devOutboxPath, { recursive: true });
+  devOutboxReady = true;
+};
 
 class EmailService {
   private transporter: nodemailer.Transporter | undefined;
@@ -38,7 +54,17 @@ class EmailService {
 
   public async sendEmail(message: EmailMessage): Promise<void> {
     if (!this.transporter || !this.from) {
-      logger.debug('Email service not initialized, skipping email send');
+      await ensureDevOutbox();
+
+      const fileName = `${Date.now()}-${randomUUID()}.json`;
+      const filePath = join(devOutboxPath, fileName);
+      const payload = {
+        ...message,
+        createdAt: new Date().toISOString(),
+      };
+
+      await writeFile(filePath, JSON.stringify(payload, null, 2) + '\n');
+      logger.info({ path: filePath }, 'Queued email in dev outbox');
       return;
     }
 

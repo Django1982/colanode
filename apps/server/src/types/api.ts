@@ -1,9 +1,10 @@
-import { ServerRole } from '@colanode/core';
+import { DeviceTokenScopeValue, ServerRole } from '@colanode/core';
 
 export type RequestAccount = {
   id: string;
   deviceId: string;
   serverRole: ServerRole;
+  scopes: DeviceTokenScopeValue[];
 };
 
 export type ClientType = 'web' | 'desktop';

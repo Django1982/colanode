@@ -1,6 +1,7 @@
 export * from './accounts/account-get';
 export * from './accounts/account-list';
 export * from './accounts/account-metadata-list';
+export * from './accounts/account-device-tokens';
 export * from './admin/accounts-list';
 export * from './admin/workspaces-list';
 export * from './admin/audit-logs-list';

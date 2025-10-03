@@ -1,4 +1,5 @@
 import { AccountDelete } from '@colanode/ui/components/accounts/account-delete';
+import { AccountDeviceTokens } from '@colanode/ui/components/accounts/account-device-tokens';
 import { AccountPasswordRotate } from '@colanode/ui/components/accounts/account-password-rotate';
 import { AccountUpdate } from '@colanode/ui/components/accounts/account-update';
 import { Container, ContainerBody } from '@colanode/ui/components/ui/container';
@@ -17,6 +18,14 @@ export const AccountSettings = () => {
             <Separator className="mt-3" />
           </div>
           <AccountUpdate account={account} />
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">Device Tokens</h2>
+            <Separator className="mt-3" />
+          </div>
+          <AccountDeviceTokens />
         </div>
 
         <div className="space-y-6">

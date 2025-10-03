@@ -1,7 +1,7 @@
 import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { ApiErrorCode } from '@colanode/core';
+import { ApiErrorCode, DeviceTokenScope } from '@colanode/core';
 import { isDeviceApiRateLimited } from '@colanode/server/lib/rate-limits';
 import { parseToken, verifyToken } from '@colanode/server/lib/tokens';
 import { RequestAccount } from '@colanode/server/types/api';
@@ -11,6 +11,21 @@ declare module 'fastify' {
     account: RequestAccount;
   }
 }
+
+const isSafeMethod = (method: string): boolean => {
+  const upper = method.toUpperCase();
+  return upper === 'GET' || upper === 'HEAD' || upper === 'OPTIONS';
+};
+
+const isReadOnlyAllowedRoute = (method: string, url: string): boolean => {
+  const path = url.split('?')[0] ?? url;
+  const key = `${method.toUpperCase()} ${path}`;
+  return (
+    key === 'POST /client/v1/accounts/sync' ||
+    key === 'POST /client/v1/sockets' ||
+    key === 'DELETE /client/v1/accounts/logout'
+  );
+};
 
 const accountAuthenticatorCallback: FastifyPluginCallback = (
   fastify,
@@ -62,6 +77,21 @@ const accountAuthenticatorCallback: FastifyPluginCallback = (
       return reply.code(401).send({
         code: ApiErrorCode.TokenInvalid,
         message: 'Token is invalid or expired',
+      });
+    }
+
+    const hasApprovalFull = result.account.scopes.includes(
+      DeviceTokenScope.ApprovalFull
+    );
+
+    if (
+      !hasApprovalFull &&
+      !isSafeMethod(request.method) &&
+      !isReadOnlyAllowedRoute(request.method, request.url)
+    ) {
+      return reply.code(403).send({
+        code: ApiErrorCode.TokenScopeMissing,
+        message: 'Token scope does not allow this operation.',
       });
     }
 

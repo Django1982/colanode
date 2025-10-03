@@ -1,5 +1,8 @@
 import { z } from 'zod/v4';
 
+import {
+  deviceTokenScopeSchema,
+} from '@colanode/core/types/api';
 import { workspaceOutputSchema } from '@colanode/core/types/workspaces';
 
 export const serverRoleSchema = z.enum(['administrator', 'member']);
@@ -60,6 +63,7 @@ export const loginSuccessOutputSchema = z.object({
   type: z.literal('success'),
   account: accountOutputSchema,
   workspaces: z.array(workspaceOutputSchema),
+  scopes: z.array(deviceTokenScopeSchema),
   deviceId: z.string(),
   token: z.string(),
 });

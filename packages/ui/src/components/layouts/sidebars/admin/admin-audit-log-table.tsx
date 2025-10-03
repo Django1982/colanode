@@ -9,6 +9,7 @@ interface AdminAuditLogTableProps {
   isLoading: boolean;
   onLoadMore: () => void;
   hasMore: boolean;
+  showIds: boolean;
 }
 
 export const AdminAuditLogTable = ({
@@ -16,6 +17,7 @@ export const AdminAuditLogTable = ({
   isLoading,
   onLoadMore,
   hasMore,
+  showIds,
 }: AdminAuditLogTableProps) => {
   return (
     <div className="space-y-4">
@@ -40,6 +42,11 @@ export const AdminAuditLogTable = ({
                     <span className="text-xs text-muted-foreground">
                       {entry.accountId ?? 'n/a'}
                     </span>
+                    {showIds && (
+                      <span className="text-[11px] font-mono text-muted-foreground">
+                        Log ID: {entry.id}
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3">

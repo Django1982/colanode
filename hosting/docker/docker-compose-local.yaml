@@ -22,7 +22,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
     volumes:
-      - ./var/logs:/var/log/colanode
+      - ./logs/server/logs:/var/log/colanode
     ports:
       - '7010:3000'
     depends_on:

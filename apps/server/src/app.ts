@@ -22,6 +22,46 @@ export const initApp = () => {
     trustProxy: true,
   });
 
+  // Override the default JSON parser with a tolerant one
+  // that handles empty bodies and edge cases gracefully
+  server.addContentTypeParser(
+    'application/json',
+    { parseAs: 'string' },
+    function tolerantJsonParser(request, body, done) {
+      const text =
+        body === undefined || body === null
+          ? ''
+          : typeof body === 'string'
+            ? body
+            : body.toString('utf8');
+
+      // Handle empty or whitespace-only bodies
+      const trimmed = text.trim();
+      if (trimmed === '') {
+        done(null, {});
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(trimmed);
+        done(null, parsed);
+      } catch (error) {
+        logger.error(
+          {
+            error: error instanceof Error ? error.message : String(error),
+            bodyPreview: trimmed.substring(0, 100),
+            url: request.url,
+            method: request.method
+          },
+          'JSON parse error - returning empty object to avoid FST_ERR_CTP_INVALID_JSON_BODY'
+        );
+        // Return empty object instead of passing error to avoid FST_ERR_CTP_INVALID_JSON_BODY
+        // The schema validator will catch the invalid structure and return proper 400 error
+        done(null, {});
+      }
+    }
+  );
+
   server.register(errorHandler);
 
   server.addHook('onRequest', (request, _, done) => {

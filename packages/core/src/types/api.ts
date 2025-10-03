@@ -78,6 +78,19 @@ export const apiTokenScopeArraySchema = z
 
 export type ApiTokenScopeValue = z.infer<typeof apiTokenScopeSchema>;
 
+export enum DeviceTokenScope {
+  ReadOnly = 'read_only',
+  ApprovalFull = 'approval_full',
+}
+
+export const deviceTokenScopeSchema = z.nativeEnum(DeviceTokenScope);
+
+export const deviceTokenScopeArraySchema = z
+  .array(deviceTokenScopeSchema)
+  .nonempty();
+
+export type DeviceTokenScopeValue = z.infer<typeof deviceTokenScopeSchema>;
+
 export const apiErrorOutputSchema = z.object({
   message: z.string(),
   code: z.enum(ApiErrorCode),

@@ -11,6 +11,7 @@ export const serverConfigSchema = z.object({
   name: z.string().default('Colanode Server'),
   avatar: z.string().optional(),
   mode: serverModeSchema.default('standalone'),
+  port: z.coerce.number().default(3000),
   pathPrefix: z.string().optional(),
   cors: z.object({
     origin: z.string().default('http://localhost:4000'),
@@ -30,6 +31,7 @@ export const readServerConfigVariables = () => {
     name,
     avatar: process.env.SERVER_AVATAR,
     mode: process.env.SERVER_MODE,
+    port: process.env.SERVER_PORT ?? process.env.PORT,
     pathPrefix: process.env.SERVER_PATH_PREFIX ?? '',
     cors: {
       origin: process.env.SERVER_CORS_ORIGIN,

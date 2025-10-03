@@ -141,8 +141,15 @@ export const deviceTokenIssueRoute: FastifyPluginCallbackZod = (
         return reply.code(401).send(invalidToken);
       }
 
-      const body = request.body;
-      const desiredScopes = body.scopes ?? [DeviceTokenScope.ReadOnly];
+      const body = (request.body ?? {}) as {
+        scopes?: unknown;
+        type?: string;
+        platform?: string;
+        version?: string;
+      };
+      const desiredScopes = Array.isArray(body.scopes)
+        ? (body.scopes as DeviceTokenScopeValue[])
+        : [DeviceTokenScope.ReadOnly];
 
       if (
         !canIssueApprovalFull &&
@@ -152,6 +159,14 @@ export const deviceTokenIssueRoute: FastifyPluginCallbackZod = (
       }
 
       const scopes = normalizeDeviceScopes(desiredScopes as DeviceTokenScopeValue[]);
+      const version = trimString(
+        body.version ?? request.client.version ?? 'unknown',
+        30
+      );
+      const platform = trimString(
+        body.platform ?? request.client.platform ?? 'unknown',
+        30
+      );
       const deviceId = generateId(IdType.Device);
       const { token: issuedToken, salt, hash } = generateToken(deviceId);
 
@@ -164,14 +179,11 @@ export const deviceTokenIssueRoute: FastifyPluginCallbackZod = (
           token_salt: salt,
           token_generated_at: new Date(),
           type: toDeviceType(body.type ?? request.client.type),
-          version: body.version ?? request.client.version,
-          platform: trimString(
-            body.platform ?? request.client.platform,
-            255
-          ),
+          version,
+          platform,
           ip: request.client.ip,
           created_at: new Date(),
-          scopes,
+          scopes: JSON.stringify(scopes) as any,
         })
         .executeTakeFirst();
 

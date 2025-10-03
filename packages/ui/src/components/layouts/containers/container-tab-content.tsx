@@ -16,6 +16,7 @@ import { RecordContainer } from '@colanode/ui/components/records/record-containe
 import { SpaceContainer } from '@colanode/ui/components/spaces/space-container';
 import { TabsContent } from '@colanode/ui/components/ui/tabs';
 import { AdminSettings } from '@colanode/ui/components/layouts/sidebars/sidebar-admin';
+import { WorkspaceApiTokens } from '@colanode/ui/components/workspaces/api-tokens/workspace-api-tokens-tab';
 import { WorkspaceDownloads } from '@colanode/ui/components/workspaces/downloads/workspace-downloads';
 import { WorkspaceStorage } from '@colanode/ui/components/workspaces/storage/workspace-storage';
 import { WorkspaceUploads } from '@colanode/ui/components/workspaces/uploads/workspace-uploads';
@@ -57,6 +58,10 @@ const getContainerTabContentBody = (tab: ContainerTab) => {
 
   if (tab.path === SpecialContainerTabPath.AppAppearance) {
     return <AppAppearanceSettings />;
+  }
+
+  if (tab.path === SpecialContainerTabPath.WorkspaceApiTokens) {
+    return <WorkspaceApiTokens />;
   }
 
   if (tab.path === SpecialContainerTabPath.AdminSettings) {

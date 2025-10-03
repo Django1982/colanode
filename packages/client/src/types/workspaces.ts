@@ -26,7 +26,7 @@ export type ContainerMetadata = {
   width?: number;
 };
 
-export type SidebarMenuType = 'chats' | 'spaces' | 'settings';
+export type SidebarMenuType = 'chats' | 'spaces' | 'settings' | 'admin';
 
 export type SidebarMetadata = {
   menu: SidebarMenuType;

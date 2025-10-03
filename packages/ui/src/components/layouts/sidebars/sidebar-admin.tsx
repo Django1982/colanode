@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Building2, ClipboardList, Users, type LucideIcon } from 'lucide-react';
+import { Building2, ClipboardList, KeyRound, Users, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -8,15 +8,19 @@ import {
 } from '@colanode/client/types/admin';
 import { AccountStatus, ServerRole, WorkspaceStatus } from '@colanode/core';
 import { AdminAuditLogEntry } from '@colanode/client/queries/admin/audit-logs-list';
+import { AdminTokenEntry } from '@colanode/client/queries/admin/admin-tokens-list';
 import { SidebarHeader } from '@colanode/ui/components/layouts/sidebars/sidebar-header';
 import { Button } from '@colanode/ui/components/ui/button';
 import { Input } from '@colanode/ui/components/ui/input';
 import { Spinner } from '@colanode/ui/components/ui/spinner';
+import { Switch } from '@colanode/ui/components/ui/switch';
+import { Label } from '@colanode/ui/components/ui/label';
 import { useAccount } from '@colanode/ui/contexts/account';
 import { useMutation } from '@colanode/ui/hooks/use-mutation';
 import { useQuery } from '@colanode/ui/hooks/use-query';
 import { cn } from '@colanode/ui/lib/utils';
 import { AdminAuditLogTable } from '@colanode/ui/components/layouts/sidebars/admin/admin-audit-log-table';
+import { AdminTokensTable } from '@colanode/ui/components/layouts/sidebars/admin/admin-tokens-table';
 
 const accountStatusLabels: Record<AccountStatus, string> = {
   [AccountStatus.Pending]: 'Pending',
@@ -29,12 +33,13 @@ const workspaceStatusLabels: Record<WorkspaceStatus, string> = {
   [WorkspaceStatus.Inactive]: 'Inactive',
 };
 
-type AdminTab = 'accounts' | 'workspaces' | 'auditLogs';
+type AdminTab = 'accounts' | 'workspaces' | 'tokens' | 'auditLogs';
 
 interface AdminSection {
   key: AdminTab;
   label: string;
   icon: LucideIcon;
+  sensitive?: boolean;
 }
 
 const ADMIN_SECTIONS: readonly [AdminSection, ...AdminSection[]] = [
@@ -49,9 +54,16 @@ const ADMIN_SECTIONS: readonly [AdminSection, ...AdminSection[]] = [
     icon: Building2,
   },
   {
+    key: 'tokens',
+    label: 'Tokens',
+    icon: KeyRound,
+    sensitive: true,
+  },
+  {
     key: 'auditLogs',
     label: 'Audit Logs',
     icon: ClipboardList,
+    sensitive: true,
   },
 ];
 
@@ -68,6 +80,42 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
   const [auditUserFilter, setAuditUserFilter] = useState('');
   const [auditCursor, setAuditCursor] = useState<string | null>(null);
   const [auditEntries, setAuditEntries] = useState<AdminAuditLogEntry[]>([]);
+  const [tokenTypeFilter, setTokenTypeFilter] = useState<'device' | 'workspace' | ''>('');
+  const [tokenCursor, setTokenCursor] = useState<string | null>(null);
+  const [tokenEntries, setTokenEntries] = useState<AdminTokenEntry[]>([]);
+  const [showSensitiveEndpoints, setShowSensitiveEndpoints] = useState(false);
+  const [showIds, setShowIds] = useState(false);
+
+  const isSuperAdmin = account.serverRole === 'administrator';
+
+  const availableSections = useMemo(() => {
+    return ADMIN_SECTIONS.filter((section) => {
+      if (!section.sensitive) {
+        return true;
+      }
+
+      if (!isSuperAdmin) {
+        return false;
+      }
+
+      return showSensitiveEndpoints;
+    });
+  }, [isSuperAdmin, showSensitiveEndpoints]);
+
+  useEffect(() => {
+    if (availableSections.length === 0) {
+      return;
+    }
+
+    if (!availableSections.some((section) => section.key === activeTab)) {
+      setActiveTab(availableSections[0]!.key);
+    }
+  }, [availableSections, activeTab]);
+
+  const activeSection = useMemo(
+    () => availableSections.find((section) => section.key === activeTab) ?? null,
+    [availableSections, activeTab]
+  );
 
   const accountsQuery = useQuery(
     {
@@ -105,6 +153,21 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
 
   const auditLogsQuery = useQuery(auditLogsQueryInput, {
     enabled: account.serverRole === 'administrator' && activeTab === 'auditLogs',
+  });
+
+  const tokensQueryInput = useMemo(
+    () => ({
+      type: 'admin.tokens.list' as const,
+      accountId: account.id,
+      limit: 50,
+      cursor: tokenCursor,
+      tokenType: tokenTypeFilter || null,
+    }),
+    [account.id, tokenCursor, tokenTypeFilter]
+  );
+
+  const tokensQuery = useQuery(tokensQueryInput, {
+    enabled: account.serverRole === 'administrator' && activeTab === 'tokens',
   });
 
   const { mutate: updateServerRole, isPending: isUpdatingServerRole } =
@@ -177,6 +240,35 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
   const resetAuditFilters = () => {
     setAuditCursor(null);
     setAuditEntries([]);
+  };
+
+  useEffect(() => {
+    if (!tokensQuery.data) {
+      if (!tokenCursor) {
+        setTokenEntries([]);
+      }
+      return;
+    }
+
+    setTokenEntries((prev) => {
+      if (tokenCursor) {
+        const existing = new Set(prev.map((entry) => entry.id));
+        const next = [...prev];
+        for (const entry of tokensQuery.data.tokens) {
+          if (!existing.has(entry.id)) {
+            next.push(entry);
+          }
+        }
+        return next;
+      }
+
+      return tokensQuery.data.tokens;
+    });
+  }, [tokensQuery.data, tokenCursor]);
+
+  const resetTokenFilters = () => {
+    setTokenCursor(null);
+    setTokenEntries([]);
   };
 
   const handleServerRoleChange = (
@@ -281,30 +373,66 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
         <div className="px-4 py-4">
           <SidebarHeader title="Admin Settings" />
         </div>
+        {isSuperAdmin && (
+          <div className="px-4 pb-2">
+            <div className="flex items-center justify-between rounded-md border border-sidebar-border bg-sidebar/60 px-3 py-2">
+              <span className="text-[11px] text-muted-foreground">
+                Sensitive endpoints
+              </span>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="admin-sensitive-toggle"
+                  checked={showSensitiveEndpoints}
+                  onCheckedChange={setShowSensitiveEndpoints}
+                />
+                <Label
+                  htmlFor="admin-sensitive-toggle"
+                  className="text-xs text-muted-foreground"
+                >
+                  Expose
+                </Label>
+              </div>
+            </div>
+          </div>
+        )}
         <nav className="flex flex-1 flex-col gap-1 px-2 pb-4">
-          {ADMIN_SECTIONS.map((section) => (
-            <AdminSettingsNavItem
-              key={section.key}
-              label={section.label}
-              icon={section.icon}
-              active={activeTab === section.key}
-              onClick={() => setActiveTab(section.key)}
-            />
-          ))}
+          {availableSections.length === 0 ? (
+            <div className="rounded-md border border-dashed border-sidebar-border px-3 py-2 text-xs text-muted-foreground">
+              No admin endpoints available.
+            </div>
+          ) : (
+            availableSections.map((section) => (
+              <AdminSettingsNavItem
+                key={section.key}
+                label={section.label}
+                icon={section.icon}
+                active={activeTab === section.key}
+                onClick={() => setActiveTab(section.key)}
+              />
+            ))
+          )}
         </nav>
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sidebar-border px-4 py-3">
           <h2 className="text-lg font-semibold">
-            {
-              (
-                ADMIN_SECTIONS.find((section) => section.key === activeTab) ??
-                ADMIN_SECTIONS[0]
-              ).label
-            }
+            {activeSection?.label ?? 'Admin Settings'}
           </h2>
-          <div className="flex items-center gap-2">
-            {activeTab === 'accounts' && (
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-md border border-sidebar-border px-2 py-1">
+              <Switch
+                id="admin-show-ids-toggle"
+                checked={showIds}
+                onCheckedChange={setShowIds}
+              />
+              <Label
+                htmlFor="admin-show-ids-toggle"
+                className="text-xs text-muted-foreground"
+              >
+                Show resource IDs
+              </Label>
+            </div>
+            {activeSection?.key === 'accounts' && (
               <Button
                 variant="outline"
                 size="sm"
@@ -313,7 +441,7 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
                 Refresh
               </Button>
             )}
-            {activeTab === 'workspaces' && (
+            {activeSection?.key === 'workspaces' && (
               <Button
                 variant="outline"
                 size="sm"
@@ -322,7 +450,19 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
                 Refresh
               </Button>
             )}
-            {activeTab === 'auditLogs' && (
+            {activeSection?.key === 'tokens' && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  resetTokenFilters();
+                  tokensQuery.refetch();
+                }}
+              >
+                Refresh
+              </Button>
+            )}
+            {activeSection?.key === 'auditLogs' && (
               <Button
                 variant="outline"
                 size="sm"
@@ -338,7 +478,12 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
         </div>
 
         <div className="flex-1 overflow-auto p-4">
-          {activeTab === 'accounts' && (
+          {availableSections.length === 0 && (
+            <div className="rounded-md border border-dashed border-sidebar-border bg-sidebar/40 p-6 text-sm text-muted-foreground">
+              Contact a super administrator to request visibility into additional admin endpoints.
+            </div>
+          )}
+          {activeSection?.key === 'accounts' && (
             <div className="space-y-4">
               <div className="flex items-center justify-end gap-4">
                 <Input
@@ -363,12 +508,13 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
                   onRoleChange={handleServerRoleChange}
                   onStatusChange={handleAccountStatusChange}
                   onPasswordReset={handlePasswordReset}
+                  showIds={showIds}
                 />
               )}
             </div>
           )}
 
-          {activeTab === 'workspaces' && (
+          {activeSection?.key === 'workspaces' && (
             <div className="space-y-4">
               <div className="flex items-center justify-end gap-4">
                 <Input
@@ -388,12 +534,56 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
                   disableActions={isRestoringWorkspace || isPurgingWorkspace}
                   onRestore={handleWorkspaceRestore}
                   onPurge={handleWorkspacePurge}
+                  showIds={showIds}
                 />
               )}
             </div>
           )}
 
-          {activeTab === 'auditLogs' && (
+          {activeSection?.key === 'tokens' && (
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <select
+                  className="rounded border border-sidebar-border bg-background px-3 py-1.5 text-sm"
+                  value={tokenTypeFilter}
+                  onChange={(event) => {
+                    setTokenTypeFilter(event.target.value as 'device' | 'workspace' | '');
+                    resetTokenFilters();
+                  }}
+                >
+                  <option value="">All token types</option>
+                  <option value="device">Device tokens</option>
+                  <option value="workspace">Workspace tokens</option>
+                </select>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setTokenTypeFilter('');
+                    resetTokenFilters();
+                    tokensQuery.refetch();
+                  }}
+                >
+                  Reset filters
+                </Button>
+              </div>
+
+              <AdminTokensTable
+                entries={tokenEntries}
+                isLoading={tokensQuery.isLoading || tokensQuery.isFetching}
+                hasMore={Boolean(tokensQuery.data?.nextCursor)}
+                onLoadMore={() => {
+                  if (!tokensQuery.data?.nextCursor) {
+                    return;
+                  }
+                  setTokenCursor(tokensQuery.data.nextCursor);
+                }}
+                showIds={showIds}
+              />
+            </div>
+          )}
+
+          {activeSection?.key === 'auditLogs' && (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-3">
                 <Input
@@ -442,6 +632,7 @@ export const AdminSettings = ({ initialTab = 'accounts' }: AdminSettingsProps) =
                   }
                   setAuditCursor(auditLogsQuery.data.nextCursor);
                 }}
+                showIds={showIds}
               />
             </div>
           )}
@@ -457,6 +648,7 @@ interface AccountsTableProps {
   onRoleChange: (id: string, role: ServerRole) => void;
   onStatusChange: (id: string, status: AccountStatus) => void;
   onPasswordReset: (id: string) => void;
+  showIds: boolean;
 }
 
 const AccountsTable = ({
@@ -465,6 +657,7 @@ const AccountsTable = ({
   onRoleChange,
   onStatusChange,
   onPasswordReset,
+  showIds,
 }: AccountsTableProps) => {
   return (
     <div className="overflow-x-auto rounded-lg border border-sidebar-border bg-sidebar/50">
@@ -488,6 +681,11 @@ const AccountsTable = ({
                   <span className="text-xs text-muted-foreground">
                     {item.email}
                   </span>
+                  {showIds && (
+                    <span className="text-[11px] font-mono text-muted-foreground">
+                      ID: {item.id}
+                    </span>
+                  )}
                 </div>
               </td>
               <td className="px-4 py-3">
@@ -563,6 +761,7 @@ interface WorkspacesTableProps {
   disableActions: boolean;
   onRestore: (id: string) => void;
   onPurge: (id: string) => void;
+  showIds: boolean;
 }
 
 const WorkspacesTable = ({
@@ -570,6 +769,7 @@ const WorkspacesTable = ({
   disableActions,
   onRestore,
   onPurge,
+  showIds,
 }: WorkspacesTableProps) => {
   return (
     <div className="overflow-x-auto rounded-lg border border-sidebar-border bg-sidebar/50">
@@ -593,6 +793,11 @@ const WorkspacesTable = ({
                   {item.description && (
                     <span className="text-xs text-muted-foreground">
                       {item.description}
+                    </span>
+                  )}
+                  {showIds && (
+                    <span className="text-[11px] font-mono text-muted-foreground">
+                      ID: {item.id}
                     </span>
                   )}
                 </div>
